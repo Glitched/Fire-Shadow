@@ -14,7 +14,6 @@ clock = pygame.time.Clock()
 
 player_dead = False
 
-
 # movement related mechanics
 player_x = DISPLAY_WIDTH/2
 player_y = DISPLAY_HEIGHT/2
@@ -35,16 +34,16 @@ while not player_dead:
             
             if event.key == pygame.K_a:
                 dx = -constants.CHAR_SPEED
-                player.flipScript()
+                player.flipScript("a")
             elif event.key == pygame.K_d:
                 dx = constants.CHAR_SPEED
-                player.flipScript()
+                player.flipScript("d")
             if event.key == pygame.K_w:
                 dy = -constants.CHAR_SPEED
-                player.flipScript()
+                player.flipScript("w")
             elif event.key == pygame.K_s:
                 dy = constants.CHAR_SPEED
-                player.flipScript()
+                player.flipScript("s")
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a or event.key == pygame.K_d:

@@ -38,16 +38,20 @@ class Character(object):
     def setFacing(self, arg):
         self.facing = arg
 
-    def flipScript(self):
-        if self.getFacing()!= LEFT:
+    def flipScript(self, key):
+        if key == 'a':
+            if self.getFacing()!= LEFT:
                 self.setFacing(LEFT)
                 self.sprite= images.wizard_left
-        if self.getFacing()!= RIGHT:
+        if key == 'd':
+            if self.getFacing()!= RIGHT:
                 self.setFacing(RIGHT)
                 self.sprite= images.wizard
-        if self.getFacing()!= UP:
+        if key == 'w':        
+            if self.getFacing()!= UP:
                 self.setFacing(UP)
-        if self.getFacing()!= DOWN:
+        if key == 's':
+            if self.getFacing()!= DOWN:
                 self.setFacing(DOWN)
 
     # TODO: Implement getters and setters for the rest of these functions
