@@ -40,7 +40,7 @@ class WizardShot(Projectile):
 
 	def update(self, game_display):
 		
-		#TODO: Get sprites for different directions and use them to update
+		# TODO: Get sprites for different directions and use them to update
 		dirn = self.getDirn()
 		if dirn == constants.LEFT:
 			self.x -= self.speed

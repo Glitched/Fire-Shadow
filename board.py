@@ -29,12 +29,15 @@ def place_tiles(width, height, game_display):
 		game_display.blit(s, tup)
 
 
-def place_object(x, y, width, height, game_display, player):
+def place_object(x, y, width, height, game_display, player, enemies):
 	"""
 	This function places objects (to be called in the loop)
 	"""
 	# Insert the character image
 	game_display.blit(player.sprite, (x + constants.TILE_SIZE, y - constants.TILE_SIZE))
+
+	for badguy in enemies:
+		game_display.blit(badguy.sprite, (badguy.x + constants.TILE_SIZE, badguy.y - constants.TILE_SIZE))
 
 	# campfire image
 	game_display.blit(animation.campfire_flicker(constants.FLICKER_I), (width / 2, height / 2))
