@@ -3,6 +3,7 @@ import random
 import animation
 import baseCharacter
 import constants
+import board
 
 pygame.init()
 
@@ -42,18 +43,6 @@ def generate_grid():
         for y in range(0, DISPLAY_HEIGHT, constants.TILE_SIZE):
             newList.append((x, y))
     return newList
-
-def place_tiles():
-    cordList = generate_grid()
-    flicker = random.randint(0, 15)
-    if flicker != 1:
-        flicker = 0
-    for tup in cordList:
-        game_display.blit(tile_image, tup)
-        # Darken
-        s = pygame.Surface((32, 32))
-        s.set_alpha(((DISPLAY_WIDTH/2 - tup[0]) ** 2 + (DISPLAY_HEIGHT/2 - tup[1]) ** 2 ) ** 0.5 * (0.9 + 0.15 * flicker))
-        game_display.blit(s, tup) 
 
 #movement related mechanics
 player_x = DISPLAY_WIDTH/2
@@ -99,7 +88,7 @@ while not player_dead:
     if(player_y <= constants.TILE_SIZE):
         player_y = constants.TILE_SIZE
 
-    place_tiles()
+    board.place_tiles()
     place_object(player_x, player_y)
 
     pygame.display.update()
