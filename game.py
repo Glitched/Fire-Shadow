@@ -2,6 +2,7 @@ import pygame
 import random
 import animation
 import baseCharacter
+import constants
 
 pygame.init()
 
@@ -9,12 +10,6 @@ pygame.init()
 DISPLAY_WIDTH = 1280
 DISPLAY_HEIGHT = 704
 
-#Colours
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
 
 #Game constants
 FLICKER_I = 1
