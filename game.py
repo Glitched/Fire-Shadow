@@ -1,8 +1,6 @@
 import pygame
 import baseCharacter
-import constants
-import board
-
+from board import *
 pygame.init()
 
 # Game Dimensions
@@ -65,8 +63,8 @@ while not player_dead:
     if player_y <= constants.TILE_SIZE:
         player_y = constants.TILE_SIZE
 
-    board.place_tiles()
-    board.place_object(player_x, player_y)
+    place_tiles(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, pygame)
+    place_object(player_x, player_y, DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player)
 
     pygame.display.update()
     clock.tick(24)
