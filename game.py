@@ -46,8 +46,8 @@ while not player_dead:
                 player.flipScript("s")
 
             if event.key == pygame.K_SPACE:
-                #Change image to attack image, fire shot, both based on direction
-                #player.attack()
+                # Change image to attack image, fire shot, both based on direction
+                # player.attack()
                 pass
 
         if event.type == pygame.KEYUP:
