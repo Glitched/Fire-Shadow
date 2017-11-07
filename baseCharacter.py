@@ -93,8 +93,8 @@ class Wizard(PlayerCharacter):
         self.sprite = images.wizard
 
     def attack(self):
-        x = self.getX()+constants.TILE_SIZE
-        y = self.getY()-constants.TILE_SIZE
+        x = self.getX()
+        y = self.getY()
         dirn = self.getFacing()
         new_proj = projectiles.WizardShot(x, y, dirn)
 

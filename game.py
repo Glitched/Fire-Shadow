@@ -71,14 +71,14 @@ while not player_dead:
 
 	player_x += dx
 	player_y += dy
-	if player_x >= DISPLAY_WIDTH - constants.TILE_SIZE:
-		player_x = DISPLAY_WIDTH - 2 * constants.TILE_SIZE
-	if player_x <= -2 * constants.TILE_SIZE:
-		player_x = -1 * constants.TILE_SIZE
-	if player_y >= DISPLAY_HEIGHT + constants.TILE_SIZE:
-		player_y = DISPLAY_HEIGHT
-	if player_y <= constants.TILE_SIZE:
-		player_y = constants.TILE_SIZE
+	if player_x >= DISPLAY_WIDTH-constants.TILE_SIZE:
+		player_x = DISPLAY_WIDTH-constants.TILE_SIZE
+	if player_x <= 0:
+		player_x = 0
+	if player_y >= DISPLAY_HEIGHT-constants.TILE_SIZE:
+		player_y = DISPLAY_HEIGHT- constants.TILE_SIZE
+	if player_y <= 0:
+		player_y = 0
 
 	# handle projectile stuff
 
