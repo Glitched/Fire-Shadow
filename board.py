@@ -2,6 +2,7 @@ import random
 import game
 import images
 import constants
+import animation
 
 
 def generate_grid():
@@ -36,7 +37,7 @@ def place_object(x, y):
 	game.game_display.blit(game.player.sprite, (x + constants.TILE_SIZE, y - constants.TILE_SIZE))
 
 	# campfire image
-	game.game_display.blit(game.animation.campfire_flicker(constants.FLICKER_I), (game.DISPLAY_WIDTH / 2, game.DISPLAY_HEIGHT / 2))
+	game.game_display.blit(animation.campfire_flicker(constants.FLICKER_I), (game.DISPLAY_WIDTH / 2, game.DISPLAY_HEIGHT / 2))
 	constants.FLICKER_I += 1
 	if constants.FLICKER_I == 20:
 		constants.FLICKER_I = 1
