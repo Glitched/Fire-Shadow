@@ -1,7 +1,6 @@
 import pygame
 import images
 import constants
-import game
 
 class Projectile(object):
 
@@ -17,9 +16,9 @@ class Projectile(object):
 
 class WizardShot(Projectile):
 
-	def __init__(self, sprite, speed, damage, x, y, dirn):
+	def __init__(self, x, y, dirn):
 
-		super().__init__(self, images.wizard_shot, constants.WIZARD_SHOT_SPEED, constants.WIZARD_SHOT_DAMAGE, x, y, dirn)
+		super().__init__(images.wizard_shot, constants.WIZARD_SHOT_SPEED, constants.WIZARD_SHOT_DAMAGE, x, y, dirn)
 
 	def getX(self):
 		return self.x
@@ -39,8 +38,10 @@ class WizardShot(Projectile):
 	def setDirn(self, arg):
 		self.dirn = arg
 
-	def update(self, x, y, dirn):
-
+	def update(self, game_display):
+		
+		#TODO: Get sprites for different directions and use them to update
+		dirn = self.getDirn()
 		if dirn == constants.LEFT:
 			self.x -= self.speed
 		if dirn == constants.RIGHT:
@@ -49,4 +50,6 @@ class WizardShot(Projectile):
 			self.y -= self.speed
 		if dirn == constants.DOWN:
 			self.y += self.speed
+		game_display.blit(self.sprite, (self.getX(),self.getY()))
+		pygame.display.flip()
 

@@ -49,7 +49,7 @@ while not player_dead:
 
             if event.key == pygame.K_SPACE:
                 #Change image to attack image, fire shot, both based on direction
-                #this function will return a projectile
+                #this function will return a projectile object
                 projectiles_array.append(player.attack())
                 pass
 
@@ -77,12 +77,12 @@ while not player_dead:
             projectiles_array.remove(proj)
         if proj.getY() >= DISPLAY_HEIGHT or proj.getY() <= 0:
             projectiles_array.remove(proj)
-        proj.update(proj.getX(),proj.getY(),proj.getDirn())
+        proj.update(game_display)
 
     player.setX(player_x)
     player.setY(player_y)
 
-    place_tiles(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, pygame)
+    place_tiles(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display)
     place_object(player_x, player_y, DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player)
 
     pygame.display.update()
