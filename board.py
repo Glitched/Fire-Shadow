@@ -1,4 +1,3 @@
-import constants
 import random
 import game
 import images
@@ -15,6 +14,6 @@ def place_tiles():
 		# Add shadow to tiles
 		s = game.pygame.Surface((32, 32))
 		s.set_alpha(
-			((constants.display_width / 2 - tup[0]) ** 2 + (constants.display_height / 2 - tup[1]) ** 2) ** 0.5 * (0.9 + 0.15 * flicker)
+			((game.display_width / 2 - tup[0]) ** 2 + (game.display_height / 2 - tup[1]) ** 2) ** 0.5 * (0.9 + 0.15 * flicker)
 		)
 		game.game_display.blit(s, tup)
