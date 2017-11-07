@@ -52,11 +52,7 @@ class Character(object):
             if self.getFacing() != constants.DOWN:
                 self.setFacing(constants.DOWN)
 
-    def attack(self):
-        x = player.getX()
-        y = player.getY()
-        dirn = player.getFacing()
-        projectiles.update()
+    
 
     # TODO: Implement getters and setters for the rest of these functions
 
@@ -75,7 +71,12 @@ class Wizard(PlayerCharacter):
         super().__init__(x, y, maxHealth, speed, atk, defence, rng, gold, purchases) 
         self.sprite = images.wizard
 
-    #def update(self):
+    def attack(self):
+        x = self.getX()
+        y = self.getY()
+        dirn = self.getFacing()
+        
+        projectiles.update()
 
 
 

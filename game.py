@@ -14,6 +14,8 @@ clock = pygame.time.Clock()
 
 player_dead = False
 
+projectiles_array = []
+
 # movement related mechanics
 player_x = DISPLAY_WIDTH/2
 player_y = DISPLAY_HEIGHT/2
@@ -47,7 +49,8 @@ while not player_dead:
 
             if event.key == pygame.K_SPACE:
                 #Change image to attack image, fire shot, both based on direction
-                #player.attack()
+                #this function will return a projectile
+                projectiles_array.append(player.attack())
                 pass
 
         if event.type == pygame.KEYUP:
