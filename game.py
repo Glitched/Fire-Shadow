@@ -11,16 +11,11 @@ DISPLAY_HEIGHT = 704
 
 # initialisation of components
 game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
-pygame.display.set_caption('Game')
+pygame.display.set_caption('Fire and Shadow')
 clock = pygame.time.Clock()
 
 player_dead = False
 
-# Loading image files
-wizard_image = pygame.image.load('images/wizard.png')
-tile_image = pygame.image.load('images/tile.png')
-campfire_image = pygame.image.load('images/campfire.png')
-campfire_image_2 = pygame.image.load('images/campfire2.png')
 
 # movement related mechanics
 player_x = DISPLAY_WIDTH/2
