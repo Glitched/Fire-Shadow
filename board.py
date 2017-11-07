@@ -39,7 +39,7 @@ def place_objects(width, height, game_display, player, enemies):
 	This function places objects on the board
 	"""
 	# Insert the character image
-	game_display.blit(player.sprite, (player.x + constants.TILE_SIZE, player.y - constants.TILE_SIZE))
+	game_display.blit(player.sprite, (player.x, player.y))
 
 	for badguy in enemies:
 		game_display.blit(badguy.sprite, (badguy.x + constants.TILE_SIZE, badguy.y - constants.TILE_SIZE))
