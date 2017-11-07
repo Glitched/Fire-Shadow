@@ -70,6 +70,15 @@ while not player_dead:
     if player_y <= constants.TILE_SIZE:
         player_y = constants.TILE_SIZE
 
+    #handle projectile stuff
+
+    for proj in projectiles_array:
+        if proj.getX() >= DISPLAY_WIDTH or proj.getX() <= 0:
+            projectiles_array.remove(proj)
+        if proj.getY() >= DISPLAY_HEIGHT or proj.getY() <= 0:
+            projectiles_array.remove(proj)
+        proj.update(proj.getX(),proj.getY(),proj.getDirn())
+
     player.setX(player_x)
     player.setY(player_y)
 

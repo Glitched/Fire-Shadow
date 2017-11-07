@@ -14,10 +14,6 @@ class Projectile(object):
 		self.y = y
 		self.dirn = dirn
 
-	def update(self, x, y, dirn):
-
-		pass
-
 
 class WizardShot(Projectile):
 
@@ -25,7 +21,32 @@ class WizardShot(Projectile):
 
 		super().__init__(self, images.wizard_shot, constants.WIZARD_SHOT_SPEED, constants.WIZARD_SHOT_DAMAGE, x, y, dirn)
 
+	def getX(self):
+		return self.x
+
+	def setX(self, arg):
+		self.x = arg
+
+	def getY(self):
+		return self.y
+
+	def setY(self, arg):
+		self.y = arg
+
+	def getDirn(self):
+		return self.dirn
+
+	def setDirn(self, arg):
+		self.dirn = arg
+
 	def update(self, x, y, dirn):
 
-		if self.x >= game.DISPLAY_WIDTH:
-			
+		if dirn == constants.LEFT:
+			self.x -= self.speed
+		if dirn == constants.RIGHT:
+			self.x += self.speed
+		if dirn == constants.UP:
+			self.y -= self.speed
+		if dirn == constants.DOWN:
+			self.y += self.speed
+

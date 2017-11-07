@@ -75,8 +75,8 @@ class Wizard(PlayerCharacter):
         x = self.getX()
         y = self.getY()
         dirn = self.getFacing()
-        
-        projectiles.update()
+
+        return projectiles.update(x, y, dirn)
 
 
 
