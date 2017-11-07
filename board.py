@@ -13,6 +13,11 @@ def generate_grid(width, height):
 	return new_list
 
 
+def draw_board(width, height, game_display, player, enemies):
+	place_tiles(width, height, game_display)
+	place_objects(width, height, game_display, player, enemies)
+
+
 def place_tiles(width, height, game_display):
 	cord_list = generate_grid(width, height)
 	flicker = random.randint(0, 15)
@@ -29,12 +34,12 @@ def place_tiles(width, height, game_display):
 		game_display.blit(s, tup)
 
 
-def place_object(x, y, width, height, game_display, player, enemies):
+def place_objects(width, height, game_display, player, enemies):
 	"""
-	This function places objects (to be called in the loop)
+	This function places objects on the board
 	"""
 	# Insert the character image
-	game_display.blit(player.sprite, (x + constants.TILE_SIZE, y - constants.TILE_SIZE))
+	game_display.blit(player.sprite, (player.x + constants.TILE_SIZE, player.y - constants.TILE_SIZE))
 
 	for badguy in enemies:
 		game_display.blit(badguy.sprite, (badguy.x + constants.TILE_SIZE, badguy.y - constants.TILE_SIZE))

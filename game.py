@@ -95,8 +95,7 @@ while not player_dead:
 	player.setX(player_x)
 	player.setY(player_y)
 
-	place_tiles(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display)
-	place_object(player_x, player_y, DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies_array)
+	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies_array)
 
 	pygame.display.update()
 	clock.tick(24)
