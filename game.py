@@ -96,7 +96,7 @@ while not player_dead:
     place_object(player_x, player_y)
 
     pygame.display.update()
-    clock.tick(25)
+    clock.tick(24)
 
 pygame.quit()
 quit()

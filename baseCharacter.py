@@ -1,4 +1,10 @@
 import pygame
+import images
+
+RIGHT = 1
+LEFT = 2
+UP = 3
+DOWN = 4
 
 class Character(object):
 
@@ -6,6 +12,7 @@ class Character(object):
         self.x = x
         self.y = y
         self.health = maxHealth
+        self.facing = RIGHT
 
     def getX(self):
         return self.x
@@ -26,7 +33,10 @@ class Character(object):
         return self.health
 
     def getFacing(self):
+        return self.facing
 
+    def setFacing(self, arg):
+        self.facing = arg
 
     def flipScript(self):
         if self.getFacing()!= LEFT:
