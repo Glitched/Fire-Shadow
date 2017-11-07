@@ -12,7 +12,7 @@ DISPLAY_HEIGHT = 704
 
 #initialisation of components
 game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
-pygame.display.set_caption('Bitch ass')
+pygame.display.set_caption('Game')
 clock = pygame.time.Clock()
 
 player_dead = False
@@ -75,12 +75,16 @@ while not player_dead:
             
             if event.key == pygame.K_a:
                 dx = -constants.CHAR_SPEED
+                player.flipScript()
             elif event.key == pygame.K_d:
                 dx = constants.CHAR_SPEED
+                player.flipScript()
             if event.key == pygame.K_w:
                 dy = -constants.CHAR_SPEED
+                player.flipScript()
             elif event.key == pygame.K_s:
                 dy = constants.CHAR_SPEED
+                player.flipScript()
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a or event.key == pygame.K_d:
