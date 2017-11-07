@@ -14,19 +14,26 @@ def generate_grid(width, height):
 
 
 def draw_board(width, height, game_display, player, enemies):
-	place_tiles(width, height, game_display)
+	grid = generate_grid(width, height)
+
+	place_tiles(game_display, grid)
 	place_objects(width, height, game_display, player, enemies)
+	add_shadows(width, height, game_display, grid)
+
+	# Place player
+	game_display.blit(player.sprite, (player.x + constants.TILE_SIZE, player.y - constants.TILE_SIZE))
 
 
-def place_tiles(width, height, game_display):
-	cord_list = generate_grid(width, height)
+def place_tiles(game_display, grid):
+	for tup in grid:
+		game_display.blit(images.tile, tup)
+
+
+def add_shadows(width, height, game_display, grid):
 	flicker = random.randint(0, 15)
 	if flicker != 1:
 		flicker = 0
-	for tup in cord_list:
-		game_display.blit(images.tile, tup)
-
-		# Add shadow to tiles
+	for tup in grid:
 		s = pygame.Surface((32, 32))
 		s.set_alpha(
 			((width / 2 - tup[0]) ** 2 + (height / 2 - tup[1]) ** 2) ** 0.5 * (0.9 + 0.15 * flicker)
@@ -38,8 +45,6 @@ def place_objects(width, height, game_display, player, enemies):
 	"""
 	This function places objects on the board
 	"""
-	# Insert the character image
-	game_display.blit(player.sprite, (player.x + constants.TILE_SIZE, player.y - constants.TILE_SIZE))
 
 	for badguy in enemies:
 		game_display.blit(badguy.sprite, (badguy.x + constants.TILE_SIZE, badguy.y - constants.TILE_SIZE))
