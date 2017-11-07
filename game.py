@@ -10,12 +10,6 @@ pygame.init()
 DISPLAY_WIDTH = 1280
 DISPLAY_HEIGHT = 704
 
-
-#Game constants
-FLICKER_I = 1
-TILE_SIZE = 32
-CHAR_SPEED = 6
-
 #initialisation of components
 game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 pygame.display.set_caption('Bitch ass')
@@ -34,20 +28,18 @@ def place_object(x, y):
     This function places objects (to be called in the loop)
     """
     #Insert the character image
-    global FLICKER_I
-
-    game_display.blit(player.sprite, (x+TILE_SIZE, y-TILE_SIZE))
+    game_display.blit(player.sprite, (x+constants.TILE_SIZE, y-constants.TILE_SIZE))
 
     #campfire image
-    game_display.blit(animation.campfire_flicker(FLICKER_I), (DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2))
-    FLICKER_I += 1
-    if FLICKER_I == 20:
-        FLICKER_I = 1
+    game_display.blit(animation.campfire_flicker(constants.FLICKER_I), (DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2))
+    constants.FLICKER_I += 1
+    if constants.FLICKER_I == 20:
+        constants.FLICKER_I = 1
 
 def generate_grid():
     newList = []
-    for x in range(0, DISPLAY_WIDTH, TILE_SIZE):
-        for y in range(0, DISPLAY_HEIGHT, TILE_SIZE):
+    for x in range(0, DISPLAY_WIDTH, constants.TILE_SIZE):
+        for y in range(0, DISPLAY_HEIGHT, constants.TILE_SIZE):
             newList.append((x, y))
     return newList
 
@@ -82,13 +74,13 @@ while not player_dead:
         if event.type == pygame.KEYDOWN:
             
             if event.key == pygame.K_a:
-                dx = -CHAR_SPEED
+                dx = -constants.CHAR_SPEED
             elif event.key == pygame.K_d:
-                dx = CHAR_SPEED
+                dx = constants.CHAR_SPEED
             if event.key == pygame.K_w:
-                dy = -CHAR_SPEED
+                dy = -constants.CHAR_SPEED
             elif event.key == pygame.K_s:
-                dy = CHAR_SPEED
+                dy = constants.CHAR_SPEED
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a or event.key == pygame.K_d:
@@ -98,14 +90,14 @@ while not player_dead:
 
     player_x += dx
     player_y += dy	
-    if(player_x >= display_widTH-TILE_SIZE):
-        player_x = display_widTH-2*TILE_SIZE
-    if(player_x <= -2*TILE_SIZE):
-        player_x = -1*TILE_SIZE
-    if(player_y >= DISPLAY_HEIGHT+TILE_SIZE):
+    if(player_x >= DISPLAY_WIDTH-constants.TILE_SIZE):
+        player_x = DISPLAY_WIDTH-2*constants.TILE_SIZE
+    if(player_x <= -2*constants.TILE_SIZE):
+        player_x = -1*constants.TILE_SIZE
+    if(player_y >= DISPLAY_HEIGHT+constants.TILE_SIZE):
         player_y= DISPLAY_HEIGHT
-    if(player_y <= TILE_SIZE):
-        player_y = TILE_SIZE
+    if(player_y <= constants.TILE_SIZE):
+        player_y = constants.TILE_SIZE
 
     place_tiles()
     place_object(player_x, player_y)
