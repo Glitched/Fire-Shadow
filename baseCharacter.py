@@ -1,10 +1,8 @@
 import pygame
 import images
+import projectiles
 
-RIGHT = 1
-LEFT = 2
-UP = 3
-DOWN = 4
+
 
 class Character(object):
 
@@ -12,7 +10,7 @@ class Character(object):
         self.x = x
         self.y = y
         self.health = maxHealth
-        self.facing = RIGHT
+        self.facing = constants.RIGHT
 
     def getX(self):
         return self.x
@@ -40,19 +38,25 @@ class Character(object):
 
     def flipScript(self, key):
         if key == 'a':
-            if self.getFacing()!= LEFT:
-                self.setFacing(LEFT)
+            if self.getFacing()!= constants.LEFT:
+                self.setFacing(constants.LEFT)
                 self.sprite= images.wizard_left
         if key == 'd':
-            if self.getFacing()!= RIGHT:
-                self.setFacing(RIGHT)
+            if self.getFacing()!= constants.RIGHT:
+                self.setFacing(constants.RIGHT)
                 self.sprite= images.wizard
         if key == 'w':        
-            if self.getFacing()!= UP:
-                self.setFacing(UP)
+            if self.getFacing()!= constants.UP:
+                self.setFacing(constants.UP)
         if key == 's':
-            if self.getFacing()!= DOWN:
-                self.setFacing(DOWN)
+            if self.getFacing()!= constants.DOWN:
+                self.setFacing(constants.DOWN)
+
+    def attack(self):
+        x = player.getX()
+        y = player.getY()
+        dirn = player.getFacing()
+
 
     # TODO: Implement getters and setters for the rest of these functions
 

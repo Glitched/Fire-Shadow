@@ -47,6 +47,8 @@ while not player_dead:
 
             if event.key == pygame.K_SPACE:
                 #Change image to attack image, fire shot, both based on direction
+                #player.attack()
+                pass
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a or event.key == pygame.K_d:
@@ -64,6 +66,9 @@ while not player_dead:
         player_y = DISPLAY_HEIGHT
     if player_y <= constants.TILE_SIZE:
         player_y = constants.TILE_SIZE
+
+    player.setX(player_x)
+    player.setY(player_y)
 
     place_tiles(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, pygame)
     place_object(player_x, player_y, DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player)
