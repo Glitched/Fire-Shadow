@@ -45,6 +45,9 @@ while not player_dead:
                 dy = constants.CHAR_SPEED
                 player.flipScript("s")
 
+            if event.key == pygame.K_SPACE:
+                #Change image to attack image, fire shot, both based on direction
+
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a or event.key == pygame.K_d:
                 dx = 0
