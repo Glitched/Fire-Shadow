@@ -2,6 +2,7 @@ import random
 import images
 import constants
 import animation
+import pygame
 
 
 def generate_grid(width, height):
@@ -12,7 +13,7 @@ def generate_grid(width, height):
 	return new_list
 
 
-def place_tiles(width, height, game_display, pygame):
+def place_tiles(width, height, game_display):
 	cord_list = generate_grid(width, height)
 	flicker = random.randint(0, 15)
 	if flicker != 1:
