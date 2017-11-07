@@ -13,3 +13,4 @@ class Projectile(object):
 
 	def update(self, x, y, dirn):
 
+		pass
