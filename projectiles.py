@@ -44,12 +44,16 @@ class WizardShot(Projectile):
 		dirn = self.getDirn()
 		if dirn == constants.LEFT:
 			self.x -= self.speed
+			self.sprite = images.wizard_shot_left
 		if dirn == constants.RIGHT:
 			self.x += self.speed
+			self.sprite = images.wizard_shot
 		if dirn == constants.UP:
 			self.y -= self.speed
+			self.sprite = images.wizard_shot_up
 		if dirn == constants.DOWN:
 			self.y += self.speed
+			self.sprite = images.wizard_shot_down
 		game_display.blit(self.sprite, (self.getX(),self.getY()))
 		pygame.display.flip()
 
