@@ -52,6 +52,27 @@ class Character(object):
             if self.getFacing() != constants.DOWN:
                 self.setFacing(constants.DOWN)
 
+    def attack_flip(self, prevDir):
+
+        if self.getFacing() == constants.LEFT:
+            self.sprite = images.wizard_left
+        elif self.getFacing() == constants.RIGHT:
+            self.sprite = images.wizard
+        elif self.getFacing() == constants.UP:
+            if prevDir == constants.LEFT:
+                self.sprite = images.wizard_left
+            elif prevDir == constants.RIGHT:
+                self.sprite = images.wizard
+        elif self.getFacing() == constants.DOWN:
+            if prevDir == constants.LEFT:
+                self.sprite = images.wizard_left
+            elif prevDir == constants.RIGHT:
+                self.sprite = images.wizard
+
+
+        pass
+
+
     
 
     # TODO: Implement getters and setters for the rest of these functions
@@ -76,6 +97,16 @@ class Wizard(PlayerCharacter):
         y = self.getY()-constants.TILE_SIZE
         dirn = self.getFacing()
         new_proj = projectiles.WizardShot(x, y, dirn)
+
+        if dirn == constants.LEFT:
+            self.sprite = images.wizard_attack_left
+        elif dirn == constants.RIGHT:
+            self.sprite = images.wizard_attack_right
+        elif dirn == constants.UP:
+            self.sprite = images.wizard_attack_up
+        elif dirn == constants.DOWN:
+            self.sprite = images.wizard_attack_down
+
         return new_proj
 
 

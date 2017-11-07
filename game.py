@@ -25,6 +25,7 @@ dy = 0
 
 # Making player
 player = baseCharacter.Wizard(player_x, player_y, 100, 100, 100, 100, 100, 100, 100)
+prevDir = constants.RIGHT
 
 while not player_dead:
 
@@ -37,9 +38,11 @@ while not player_dead:
             if event.key == pygame.K_a:
                 dx = -constants.CHAR_SPEED
                 player.flipScript("a")
+                prevDir = constants.LEFT
             elif event.key == pygame.K_d:
                 dx = constants.CHAR_SPEED
                 player.flipScript("d")
+                prevDir = constants.RIGHT
             if event.key == pygame.K_w:
                 dy = -constants.CHAR_SPEED
                 player.flipScript("w")
@@ -51,13 +54,16 @@ while not player_dead:
                 #Change image to attack image, fire shot, both based on direction
                 #this function will return a projectile object
                 projectiles_array.append(player.attack())
-                pass
+                
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a or event.key == pygame.K_d:
                 dx = 0
             elif event.key == pygame.K_w or event.key == pygame.K_s:
                 dy = 0
+
+            if event.key == pygame.K_SPACE:
+                player.attack_flip(prevDir)
 
     player_x += dx
     player_y += dy	
