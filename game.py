@@ -83,11 +83,14 @@ while not player_dead:
 	# handle projectile stuff
 
 	for proj in projectiles_array:
-		if proj.getX() >= DISPLAY_WIDTH or proj.getX() <= 0:
+		if proj.getX() >= DISPLAY_WIDTH \
+			or proj.getX() <= 0 \
+			or proj.getY() >= DISPLAY_HEIGHT \
+			or proj.getY() <= 0:
+
 			projectiles_array.remove(proj)
-		if proj.getY() >= DISPLAY_HEIGHT or proj.getY() <= 0:
-			projectiles_array.remove(proj)
-		proj.update(game_display)
+		else:
+			proj.update(game_display)
 
 	for badguy in enemies_array:
 		badguy.update(player_x, player_y)
@@ -95,7 +98,7 @@ while not player_dead:
 	player.setX(player_x)
 	player.setY(player_y)
 
-	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies_array)
+	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies_array, projectiles_array)
 
 	pygame.display.update()
 	clock.tick(24)

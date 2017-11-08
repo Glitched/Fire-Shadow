@@ -5,6 +5,18 @@ import animation
 import pygame
 
 
+def draw_board(width, height, game_display, player, enemies, projectiles):
+	grid = generate_grid(width, height)
+
+	place_tiles(game_display, grid)
+	draw_projectiles(projectiles, game_display)
+	place_objects(width, height, game_display, player, enemies)
+	add_shadows(width, height, game_display, grid)
+
+	# Place player
+	game_display.blit(player.sprite, (player.x + constants.TILE_SIZE, player.y - constants.TILE_SIZE))
+
+
 def generate_grid(width, height):
 	new_list = []
 	for x in range(0, width, constants.TILE_SIZE):
@@ -13,16 +25,9 @@ def generate_grid(width, height):
 	return new_list
 
 
-def draw_board(width, height, game_display, player, enemies):
-	grid = generate_grid(width, height)
-
-	place_tiles(game_display, grid)
-	place_objects(width, height, game_display, player, enemies)
-	add_shadows(width, height, game_display, grid)
-
-	# Place player
-	game_display.blit(player.sprite, (player.x + constants.TILE_SIZE, player.y - constants.TILE_SIZE))
-
+def draw_projectiles(projectiles, game_display):
+	for projectile in projectiles:
+		game_display.blit(projectile.sprite, (projectile.getX(), projectile.getY()))
 
 def place_tiles(game_display, grid):
 	for tup in grid:

@@ -2,6 +2,7 @@ import pygame
 import images
 import constants
 
+
 class Projectile(object):
 
 	def __init__(self, sprite, speed, damage, x, y, dirn):
@@ -18,7 +19,15 @@ class WizardShot(Projectile):
 
 	def __init__(self, x, y, dirn):
 
-		super().__init__(images.wizard_shot, constants.WIZARD_SHOT_SPEED, constants.WIZARD_SHOT_DAMAGE, x, y, dirn)
+		sprite = images.wizard_shot
+		if dirn == constants.LEFT:
+			sprite = images.wizard_shot_left
+		elif dirn == constants.UP:
+			sprite = images.wizard_shot_up
+		elif dirn == constants.DOWN:
+			sprite = images.wizard_shot_down
+
+		super().__init__(sprite, constants.WIZARD_SHOT_SPEED, constants.WIZARD_SHOT_DAMAGE, x + 32, y - 32, dirn)
 
 	def getX(self):
 		return self.x
@@ -44,16 +53,10 @@ class WizardShot(Projectile):
 		dirn = self.getDirn()
 		if dirn == constants.LEFT:
 			self.x -= self.speed
-			self.sprite = images.wizard_shot_left
 		if dirn == constants.RIGHT:
 			self.x += self.speed
-			self.sprite = images.wizard_shot
 		if dirn == constants.UP:
 			self.y -= self.speed
-			self.sprite = images.wizard_shot_up
 		if dirn == constants.DOWN:
 			self.y += self.speed
-			self.sprite = images.wizard_shot_down
-		game_display.blit(self.sprite, (self.getX(),self.getY()))
-		pygame.display.flip()
 
