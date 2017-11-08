@@ -29,6 +29,7 @@ def draw_projectiles(projectiles, game_display):
 	for projectile in projectiles:
 		game_display.blit(projectile.sprite, (projectile.getX(), projectile.getY()))
 
+
 def place_tiles(game_display, grid):
 	for tup in grid:
 		game_display.blit(images.tile, tup)

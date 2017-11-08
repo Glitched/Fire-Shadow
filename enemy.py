@@ -1,4 +1,22 @@
 import images
+import random
+
+
+def random_spawn_location(width, height):
+	y = 0
+	x = 0
+	edge = random.randint(0, 4)
+	if edge == 1:
+		x = random.randint(0, width)
+	elif edge == 2:
+		x = random.randint(0, width)
+		y = height
+	elif edge == 3:
+		y = random.randint(0, height)
+	else:
+		y = random.randint(0, height)
+		x = width
+	return x, y
 
 
 class Enemy(object):

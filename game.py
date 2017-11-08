@@ -30,6 +30,8 @@ dy = 0
 player = baseCharacter.Wizard(player_x, player_y, 100, 100, 100, 100, 100, 100, 100)
 prevDir = constants.RIGHT
 
+
+
 while not player_dead:
 
 	for event in pygame.event.get():
@@ -53,7 +55,8 @@ while not player_dead:
 				dy = constants.CHAR_SPEED
 				player.flipScript("s")
 			elif event.key == pygame.K_q:
-				enemies_array.append(enemy.Zombie(player_x + 100, player_y + 100))
+				location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+				enemies_array.append(enemy.Zombie(location[0], location[1]))
 
 			if event.key == pygame.K_SPACE:
 				# Change image to attack image, fire shot, both based on direction
@@ -71,12 +74,12 @@ while not player_dead:
 
 	player_x += dx
 	player_y += dy
-	if player_x >= DISPLAY_WIDTH-constants.TILE_SIZE:
-		player_x = DISPLAY_WIDTH-constants.TILE_SIZE
+	if player_x >= DISPLAY_WIDTH - constants.TILE_SIZE:
+		player_x = DISPLAY_WIDTH - constants.TILE_SIZE
 	if player_x <= 0:
 		player_x = 0
-	if player_y >= DISPLAY_HEIGHT-constants.TILE_SIZE:
-		player_y = DISPLAY_HEIGHT- constants.TILE_SIZE
+	if player_y >= DISPLAY_HEIGHT - constants.TILE_SIZE:
+		player_y = DISPLAY_HEIGHT - constants.TILE_SIZE
 	if player_y <= 0:
 		player_y = 0
 
