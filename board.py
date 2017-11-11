@@ -5,14 +5,16 @@ import animation
 import pygame
 
 
-def draw_board(width, height, screen, player, enemies, projectiles, towers):
+def draw_board(width, height, screen, player, enemies, projectiles, towers, lights, light_map):
 	grid = generate_grid(width, height)
 
 	place_tiles(screen, grid)
 	place_towers(towers, screen)
 	draw_projectiles(projectiles, screen)
-	place_objects(width, height, screen, enemies)
-	add_shadows(width, height, screen, grid)
+	place_objects(width, height, screen, enemies, lights)
+
+	# Draw lighting
+	screen.blit(light_map, (0, 0), special_flags=pygame.BLEND_RGBA_SUB)
 
 	# Place player
 	screen.blit(player.sprite, (player.x + constants.TILE_SIZE, player.y - constants.TILE_SIZE))
@@ -41,7 +43,7 @@ def place_towers(towers, screen):
 		screen.blit(tower.sprite, (tower.x, tower.y))
 
 
-def place_objects(width, height, screen, enemies):
+def place_objects(width, height, screen, enemies, lights):
 	"""
 	This function places objects on the board
 	"""
@@ -55,14 +57,13 @@ def place_objects(width, height, screen, enemies):
 	if constants.FLICKER_I == 20:
 		constants.FLICKER_I = 1
 
+	for light in lights:
+		screen.blit(animation.campfire_flicker(constants.FLICKER_I + random.randint(-2,2)), light)
 
-def add_shadows(width, height, screen, grid):
-	flicker = random.randint(0, 15)
-	if flicker != 1:
-		flicker = 0
-	for tup in grid:
-		s = pygame.Surface((32, 32))
-		s.set_alpha(
-			((width / 2 - tup[0]) ** 2 + (height / 2 - tup[1]) ** 2) ** 0.5 * (0.9 + 0.15 * flicker)
-		)
-		screen.blit(s, tup)
+
+def generate_light_surface(width, height, lights):
+	fx = pygame.surface.Surface((width, height))
+	fx.fill(pygame.color.Color('White'))
+	for light in lights:
+		fx.blit(images.light, (light[0] - 352 + 16, light[1] - 352 + 16))
+	return fx

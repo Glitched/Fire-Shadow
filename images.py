@@ -26,3 +26,6 @@ campfire_2 = pygame.image.load('images/campfire2.png')
 # Towers
 trap = pygame.image.load('images/trap.png')
 trap_disabled = pygame.image.load('images/trap-closed.png')
+
+# Lighting FX
+light = pygame.image.load('images/light.png')

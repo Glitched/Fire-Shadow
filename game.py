@@ -22,6 +22,9 @@ player_dead = False
 projectiles = []
 enemies = []
 towers = []
+lights = [(DISPLAY_WIDTH/2, DISPLAY_HEIGHT /2)]
+
+light_map = generate_light_surface(DISPLAY_WIDTH, DISPLAY_HEIGHT, lights)
 
 # movement related mechanics
 player_x = DISPLAY_WIDTH / 2
@@ -39,7 +42,7 @@ frame = 0
 seconds = 0
 
 score = 0
-money = 0
+money = 5000
 
 basicfont = pygame.font.SysFont(None, 22)
 
@@ -72,6 +75,13 @@ while not player_dead:
 				if money >= 40:
 					money -= 40
 					towers.append(tower.Trap(player_x, player_y))
+
+			if event.key == pygame.K_e:
+				if money >= 100:
+					money -= 100
+					lights.append((player_x, player_y))
+					light_map = generate_light_surface(DISPLAY_WIDTH, DISPLAY_HEIGHT, lights)
+
 
 
 		if event.type == pygame.KEYUP:
@@ -141,7 +151,7 @@ while not player_dead:
 	player.setX(player_x)
 	player.setY(player_y)
 
-	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers)
+	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map)
 
 	text = basicfont.render("Money: " + str(money), True, (255, 255, 255))
 	textrect = text.get_rect()
