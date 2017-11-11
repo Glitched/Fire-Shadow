@@ -39,7 +39,7 @@ frame = 0
 seconds = 0
 
 score = 0
-money = 50000
+money = 0
 
 basicfont = pygame.font.SysFont(None, 22)
 
@@ -148,6 +148,12 @@ while not player_dead:
 	textrect.top = 10
 	textrect.left = 10
 	game_display.blit(text, textrect)
+
+	healthdisplay = basicfont.render("Health: " + str(round(player.health)), True, (255, 255, 255))
+	heathrect = text.get_rect()
+	heathrect.top = DISPLAY_HEIGHT - 30
+	heathrect.left = 10
+	game_display.blit(healthdisplay, heathrect)
 
 	pygame.display.update()
 	clock.tick(24)
