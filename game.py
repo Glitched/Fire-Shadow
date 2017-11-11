@@ -4,6 +4,7 @@ import enemy
 import tower
 import images
 from board import *
+from HUD import *
 
 pygame.init()
 pygame.font.init()
@@ -46,61 +47,54 @@ money = 0
 
 basicfont = pygame.font.SysFont(None, 22)
 
-while not player_dead:
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			player_dead = True
 
-		if event.type == pygame.KEYDOWN:
+def handle_key():
+	global dx, prevDir, dy, light_map, money
+	if event.type == pygame.KEYDOWN:
 
-			if event.key == pygame.K_a:
-				dx = -constants.CHAR_SPEED
-				player.flipScript("a")
-				prevDir = constants.LEFT
-			elif event.key == pygame.K_d:
-				dx = constants.CHAR_SPEED
-				player.flipScript("d")
-				prevDir = constants.RIGHT
-			if event.key == pygame.K_w:
-				dy = -constants.CHAR_SPEED
-				player.flipScript("w")
-			elif event.key == pygame.K_s:
-				dy = constants.CHAR_SPEED
-				player.flipScript("s")
+		if event.key == pygame.K_a:
+			dx = -constants.CHAR_SPEED
+			player.flipScript("a")
+			prevDir = constants.LEFT
+		elif event.key == pygame.K_d:
+			dx = constants.CHAR_SPEED
+			player.flipScript("d")
+			prevDir = constants.RIGHT
+		if event.key == pygame.K_w:
+			dy = -constants.CHAR_SPEED
+			player.flipScript("w")
+		elif event.key == pygame.K_s:
+			dy = constants.CHAR_SPEED
+			player.flipScript("s")
 
-			if event.key == pygame.K_SPACE:
-				projectiles.append(player.attack())
+		if event.key == pygame.K_SPACE:
+			projectiles.append(player.attack())
 
-			if event.key == pygame.K_t:
-				if money >= 40:
-					money -= 40
-					towers.append(tower.Trap(player_x, player_y))
+		if event.key == pygame.K_t:
+			if money >= 40:
+				money -= 40
+				towers.append(tower.Trap(player_x, player_y))
 
-			if event.key == pygame.K_e:
-				if money >= 100:
-					money -= 100
-					lights.append((player_x, player_y))
-					light_map = add_light(light_map, (player_x, player_y))
+		if event.key == pygame.K_e:
+			if money >= 100:
+				money -= 100
+				lights.append((player_x, player_y))
+				light_map = add_light(light_map, (player_x, player_y))
+	if event.type == pygame.KEYUP:
+		if event.key == pygame.K_a or event.key == pygame.K_d:
+			dx = 0
+		elif event.key == pygame.K_w or event.key == pygame.K_s:
+			dy = 0
 
-		if event.type == pygame.KEYUP:
-			if event.key == pygame.K_a or event.key == pygame.K_d:
-				dx = 0
-			elif event.key == pygame.K_w or event.key == pygame.K_s:
-				dy = 0
+		if event.key == pygame.K_SPACE:
+			player.attack_flip(prevDir)
 
-			if event.key == pygame.K_SPACE:
-				player.attack_flip(prevDir)
 
-	frame += 1
-	if frame >= 24:
-		seconds += 1
-		frame = 0
-	if frame == 0 or frame == 12:
-		location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-		enemies.append(enemy.Zombie(location[0], location[1]))
-
+def update_player_location():
+	global player_x, player_y
 	player_x += dx
 	player_y += dy
+
 	if player_x >= DISPLAY_WIDTH - constants.TILE_SIZE:
 		player_x = DISPLAY_WIDTH - constants.TILE_SIZE
 	if player_x <= 0:
@@ -110,12 +104,31 @@ while not player_dead:
 	if player_y <= 0:
 		player_y = 0
 
-	for proj in projectiles:
-		if proj.getX() >= DISPLAY_WIDTH \
-			or proj.getX() <= 0 \
-			or proj.getY() >= DISPLAY_HEIGHT \
-			or proj.getY() <= 0:
+	player.setX(player_x)
+	player.setY(player_y)
 
+
+while not player_dead:
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			player_dead = True
+		handle_key()
+
+	# Spawn two bad guys per second
+	frame += 1
+	if frame >= 24:
+		seconds += 1
+		frame = 0
+	if frame == 0 or frame == 12:
+		location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+		enemies.append(enemy.Zombie(location[0], location[1]))
+
+	update_player_location()
+
+	# Deal damage to bad guys
+	for proj in projectiles:
+		if proj.getX() >= DISPLAY_WIDTH or proj.getX() <= 0 \
+			or proj.getY() >= DISPLAY_HEIGHT or proj.getY() <= 0:
 			projectiles.remove(proj)
 		else:
 			proj.update(game_display)
@@ -129,6 +142,7 @@ while not player_dead:
 						money += 5
 					break
 
+	# Move bad guys and deal damage to good guy
 	for badguy in enemies:
 		badguy.update(player_x, player_y)
 		if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20:
@@ -146,30 +160,14 @@ while not player_dead:
 			else:
 				item.cooldown -= 1
 
-	player.setX(player_x)
-	player.setY(player_y)
-
 	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map)
-
-	text = basicfont.render("Money: " + str(money), True, (255, 255, 255))
-	textrect = text.get_rect()
-	textrect.top = 10
-	textrect.left = 10
-	game_display.blit(text, textrect)
-
-	healthdisplay = basicfont.render("Health: " + str(round(player.health)), True, (255, 255, 255))
-	heathrect = text.get_rect()
-	heathrect.top = DISPLAY_HEIGHT - 30
-	heathrect.left = 10
-	game_display.blit(healthdisplay, heathrect)
-
+	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, money, player.health)
 	pygame.display.update()
 	clock.tick(24)
 
 	if player.health <= 0:
 		player_dead = True
-
-	if player.health <= max_health:
+	elif player.health <= max_health:
 		player.health += 0.02
 
 
