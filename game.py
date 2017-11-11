@@ -11,7 +11,7 @@ DISPLAY_HEIGHT = 704
 
 # initialisation of components
 game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
-pygame.display.set_caption('Fire and Shadow')
+pygame.display.set_caption('Fire & Shadow')
 clock = pygame.time.Clock()
 
 player_dead = False
@@ -27,13 +27,17 @@ dx = 0
 dy = 0
 
 # Making player
-player = baseCharacter.Wizard(player_x, player_y, 100, 100, 100, 100, 100, 100, 100)
+player = baseCharacter.Wizard(player_x, player_y, 20, 100, 100, 100, 100, 100, 100)
 prevDir = constants.RIGHT
+
+frame = 0
+seconds = 0
+score = 0
 
 
 
 while not player_dead:
-
+	frame += 1
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			player_dead = True
@@ -54,9 +58,6 @@ while not player_dead:
 			elif event.key == pygame.K_s:
 				dy = constants.CHAR_SPEED
 				player.flipScript("s")
-			elif event.key == pygame.K_q:
-				location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-				enemies_array.append(enemy.Zombie(location[0], location[1]))
 
 			if event.key == pygame.K_SPACE:
 				# Change image to attack image, fire shot, both based on direction
@@ -71,6 +72,13 @@ while not player_dead:
 
 			if event.key == pygame.K_SPACE:
 				player.attack_flip(prevDir)
+
+	if frame >= 24:
+		seconds += 1
+		frame = 0
+	if frame == 0 or frame == 12:
+		location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+		enemies_array.append(enemy.Zombie(location[0], location[1]))
 
 	player_x += dx
 	player_y += dy
@@ -94,9 +102,19 @@ while not player_dead:
 			projectiles_array.remove(proj)
 		else:
 			proj.update(game_display)
+			for badguy in enemies_array:
+				if abs((proj.getX()) - badguy.x - 32) < 20 and abs((proj.getY()) - badguy.y + 32) < 20:
+					badguy.health -= proj.damage
+					projectiles_array.remove(proj)
+					if badguy.health <= 0:
+						enemies_array.remove(badguy)
+						score += 1
+					break
 
 	for badguy in enemies_array:
 		badguy.update(player_x, player_y)
+		if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20:
+			player.health -= badguy.damage
 
 	player.setX(player_x)
 	player.setY(player_y)
@@ -106,5 +124,9 @@ while not player_dead:
 	pygame.display.update()
 	clock.tick(24)
 
+	if player.health <= 0:
+		player_dead = True
+
+print(score)
 pygame.quit()
 quit()

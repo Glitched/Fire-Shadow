@@ -21,11 +21,12 @@ def random_spawn_location(width, height):
 
 class Enemy(object):
 
-	def __init__(self, sprite, speed, damage, x, y):
+	def __init__(self, sprite, speed, damage, health, x, y):
 
 		self.sprite = sprite
 		self.speed = speed
 		self.damage = damage
+		self.health = health
 		self.x = x
 		self.y = y
 
@@ -45,4 +46,4 @@ class Enemy(object):
 class Zombie(Enemy):
 
 	def __init__(self, x, y):
-		super().__init__(images.zombie, 1, 2, x, y)
+		super().__init__(images.zombie, 2, 1, 5, x, y)
