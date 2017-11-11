@@ -67,3 +67,8 @@ def generate_light_surface(width, height, lights):
 	for light in lights:
 		fx.blit(images.light, (light[0] - 352 + 16, light[1] - 352 + 16))
 	return fx
+
+
+def add_light(light_map, light):
+	light_map.blit(images.light, (light[0] - 352 + 16, light[1] - 352 + 16))
+	return light_map

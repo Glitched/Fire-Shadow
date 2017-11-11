@@ -42,7 +42,7 @@ frame = 0
 seconds = 0
 
 score = 0
-money = 5000
+money = 0
 
 basicfont = pygame.font.SysFont(None, 22)
 
@@ -80,9 +80,7 @@ while not player_dead:
 				if money >= 100:
 					money -= 100
 					lights.append((player_x, player_y))
-					light_map = generate_light_surface(DISPLAY_WIDTH, DISPLAY_HEIGHT, lights)
-
-
+					light_map = add_light(light_map, (player_x, player_y))
 
 		if event.type == pygame.KEYUP:
 			if event.key == pygame.K_a or event.key == pygame.K_d:
