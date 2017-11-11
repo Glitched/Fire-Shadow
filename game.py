@@ -1,9 +1,12 @@
 import pygame
 import baseCharacter
 import enemy
+import tower
+import images
 from board import *
 
 pygame.init()
+pygame.font.init()
 
 # Game Dimensions
 DISPLAY_WIDTH = 1280
@@ -16,8 +19,9 @@ clock = pygame.time.Clock()
 
 player_dead = False
 
-projectiles_array = []
-enemies_array = []
+projectiles = []
+enemies = []
+towers = []
 
 # movement related mechanics
 player_x = DISPLAY_WIDTH / 2
@@ -29,15 +33,17 @@ dy = 0
 # Making player
 player = baseCharacter.Wizard(player_x, player_y, 20, 100, 100, 100, 100, 100, 100)
 prevDir = constants.RIGHT
+max_health = player.health
 
 frame = 0
 seconds = 0
+
 score = 0
+money = 50000
 
-
+basicfont = pygame.font.SysFont(None, 22)
 
 while not player_dead:
-	frame += 1
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			player_dead = True
@@ -60,9 +66,13 @@ while not player_dead:
 				player.flipScript("s")
 
 			if event.key == pygame.K_SPACE:
-				# Change image to attack image, fire shot, both based on direction
-				# this function will return a projectile object
-				projectiles_array.append(player.attack())
+				projectiles.append(player.attack())
+
+			if event.key == pygame.K_t:
+				if money >= 40:
+					money -= 40
+					towers.append(tower.Trap(player_x, player_y))
+
 
 		if event.type == pygame.KEYUP:
 			if event.key == pygame.K_a or event.key == pygame.K_d:
@@ -73,12 +83,13 @@ while not player_dead:
 			if event.key == pygame.K_SPACE:
 				player.attack_flip(prevDir)
 
+	frame += 1
 	if frame >= 24:
 		seconds += 1
 		frame = 0
 	if frame == 0 or frame == 12:
 		location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-		enemies_array.append(enemy.Zombie(location[0], location[1]))
+		enemies.append(enemy.Zombie(location[0], location[1]))
 
 	player_x += dx
 	player_y += dy
@@ -91,41 +102,62 @@ while not player_dead:
 	if player_y <= 0:
 		player_y = 0
 
-	# handle projectile stuff
-
-	for proj in projectiles_array:
+	for proj in projectiles:
 		if proj.getX() >= DISPLAY_WIDTH \
 			or proj.getX() <= 0 \
 			or proj.getY() >= DISPLAY_HEIGHT \
 			or proj.getY() <= 0:
 
-			projectiles_array.remove(proj)
+			projectiles.remove(proj)
 		else:
 			proj.update(game_display)
-			for badguy in enemies_array:
+			for badguy in enemies:
 				if abs((proj.getX()) - badguy.x - 32) < 20 and abs((proj.getY()) - badguy.y + 32) < 20:
 					badguy.health -= proj.damage
-					projectiles_array.remove(proj)
+					projectiles.remove(proj)
 					if badguy.health <= 0:
-						enemies_array.remove(badguy)
+						enemies.remove(badguy)
 						score += 1
+						money += 5
 					break
 
-	for badguy in enemies_array:
+	for badguy in enemies:
 		badguy.update(player_x, player_y)
 		if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20:
 			player.health -= badguy.damage
 
+	for item in towers:
+		if isinstance(item, tower.Trap):
+			if item.cooldown <= 0:
+				item.sprite = images.trap
+				for badguy in enemies:
+					if abs(badguy.x + 32 - item.x) < 20 and abs(badguy.y - 32 - item.y) < 20:
+						enemies.remove(badguy)
+						item.sprite = images.trap_disabled
+						item.cooldown = 48
+			else:
+				item.cooldown -= 1
+
 	player.setX(player_x)
 	player.setY(player_y)
 
-	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies_array, projectiles_array)
+	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers)
+
+	text = basicfont.render("Money: " + str(money), True, (255, 255, 255))
+	textrect = text.get_rect()
+	textrect.top = 10
+	textrect.left = 10
+	game_display.blit(text, textrect)
 
 	pygame.display.update()
 	clock.tick(24)
 
 	if player.health <= 0:
 		player_dead = True
+
+	if player.health <= max_health:
+		player.health += 0.02
+
 
 print(score)
 pygame.quit()

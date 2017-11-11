@@ -22,3 +22,7 @@ tile = pygame.image.load('images/tile.png')
 
 campfire = pygame.image.load('images/campfire.png')
 campfire_2 = pygame.image.load('images/campfire2.png')
+
+# Towers
+trap = pygame.image.load('images/trap.png')
+trap_disabled = pygame.image.load('images/trap-closed.png')

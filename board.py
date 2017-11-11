@@ -5,16 +5,17 @@ import animation
 import pygame
 
 
-def draw_board(width, height, game_display, player, enemies, projectiles):
+def draw_board(width, height, screen, player, enemies, projectiles, towers):
 	grid = generate_grid(width, height)
 
-	place_tiles(game_display, grid)
-	draw_projectiles(projectiles, game_display)
-	place_objects(width, height, game_display, player, enemies)
-	add_shadows(width, height, game_display, grid)
+	place_tiles(screen, grid)
+	place_towers(towers, screen)
+	draw_projectiles(projectiles, screen)
+	place_objects(width, height, screen, enemies)
+	add_shadows(width, height, screen, grid)
 
 	# Place player
-	game_display.blit(player.sprite, (player.x + constants.TILE_SIZE, player.y - constants.TILE_SIZE))
+	screen.blit(player.sprite, (player.x + constants.TILE_SIZE, player.y - constants.TILE_SIZE))
 
 
 def generate_grid(width, height):
@@ -25,17 +26,37 @@ def generate_grid(width, height):
 	return new_list
 
 
-def draw_projectiles(projectiles, game_display):
+def draw_projectiles(projectiles, screen):
 	for projectile in projectiles:
-		game_display.blit(projectile.sprite, (projectile.getX(), projectile.getY()))
+		screen.blit(projectile.sprite, (projectile.getX(), projectile.getY()))
 
 
-def place_tiles(game_display, grid):
+def place_tiles(screen, grid):
 	for tup in grid:
-		game_display.blit(images.tile, tup)
+		screen.blit(images.tile, tup)
 
 
-def add_shadows(width, height, game_display, grid):
+def place_towers(towers, screen):
+	for tower in towers:
+		screen.blit(tower.sprite, (tower.x, tower.y))
+
+
+def place_objects(width, height, screen, enemies):
+	"""
+	This function places objects on the board
+	"""
+
+	for badguy in enemies:
+		screen.blit(badguy.sprite, (badguy.x + constants.TILE_SIZE, badguy.y - constants.TILE_SIZE))
+
+	# campfire image
+	screen.blit(animation.campfire_flicker(constants.FLICKER_I), (width / 2, height / 2))
+	constants.FLICKER_I += 1
+	if constants.FLICKER_I == 20:
+		constants.FLICKER_I = 1
+
+
+def add_shadows(width, height, screen, grid):
 	flicker = random.randint(0, 15)
 	if flicker != 1:
 		flicker = 0
@@ -44,19 +65,4 @@ def add_shadows(width, height, game_display, grid):
 		s.set_alpha(
 			((width / 2 - tup[0]) ** 2 + (height / 2 - tup[1]) ** 2) ** 0.5 * (0.9 + 0.15 * flicker)
 		)
-		game_display.blit(s, tup)
-
-
-def place_objects(width, height, game_display, player, enemies):
-	"""
-	This function places objects on the board
-	"""
-
-	for badguy in enemies:
-		game_display.blit(badguy.sprite, (badguy.x + constants.TILE_SIZE, badguy.y - constants.TILE_SIZE))
-
-	# campfire image
-	game_display.blit(animation.campfire_flicker(constants.FLICKER_I), (width / 2, height / 2))
-	constants.FLICKER_I += 1
-	if constants.FLICKER_I == 20:
-		constants.FLICKER_I = 1
+		screen.blit(s, tup)
