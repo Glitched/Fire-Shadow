@@ -3,7 +3,6 @@ import baseCharacter
 import enemy
 import tower
 import images
-import music
 from board import *
 from HUD import *
 
@@ -50,7 +49,6 @@ basicfont = pygame.font.SysFont(None, 22)
 
 pygame.mixer.music.load('music.ogg')
 pygame.mixer.music.play(-1)
-
 
 
 def handle_key():
