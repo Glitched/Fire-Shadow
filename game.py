@@ -5,6 +5,20 @@ import tower
 import images
 from board import *
 from HUD import *
+"""
+TODO LIST:
+
+- Implement a debug mode 
+- Implement a start screen (nothing fancy yet necessarily, but something functional)
+- Implement a dying screen
+- Find a new font (Check google fonts)
+- Branding work: Logo and other shit
+- Towers that shoot/ different ideas/ power up towers (beacons)
+- GUI rework
+- Actual pathfinding algorithms
+- Upgrade systems
+- Wave systems
+"""
 
 pygame.init()
 pygame.font.init()
@@ -98,12 +112,12 @@ def update_player_location():
 	player_x += dx
 	player_y += dy
 
-	if player_x >= DISPLAY_WIDTH - constants.TILE_SIZE:
-		player_x = DISPLAY_WIDTH - constants.TILE_SIZE
+	if player_x >= DISPLAY_WIDTH-constants.TILE_SIZE:
+		player_x = DISPLAY_WIDTH- constants.TILE_SIZE
 	if player_x <= 0:
 		player_x = 0
-	if player_y >= DISPLAY_HEIGHT - constants.TILE_SIZE:
-		player_y = DISPLAY_HEIGHT - constants.TILE_SIZE
+	if player_y >= DISPLAY_HEIGHT-constants.TILE_SIZE:
+		player_y = DISPLAY_HEIGHT- constants.TILE_SIZE
 	if player_y <= 0:
 		player_y = 0
 
@@ -136,7 +150,7 @@ while not player_dead:
 		else:
 			proj.update(game_display)
 			for badguy in enemies:
-				if abs((proj.getX()) - badguy.x - 32) < 20 and abs((proj.getY()) - badguy.y + 32) < 20:
+				if abs((proj.getX()) - badguy.x ) < 20 and abs((proj.getY()) - badguy.y) < 20:
 					badguy.health -= proj.damage
 					projectiles.remove(proj)
 					if badguy.health <= 0:
@@ -156,7 +170,7 @@ while not player_dead:
 			if item.cooldown <= 0:
 				item.sprite = images.trap
 				for badguy in enemies:
-					if abs(badguy.x + 32 - item.x) < 20 and abs(badguy.y - 32 - item.y) < 20:
+					if abs(badguy.x - item.x) < 20 and abs(badguy.y -  item.y) < 20:
 						enemies.remove(badguy)
 						item.sprite = images.trap_disabled
 						item.cooldown = 48
@@ -171,7 +185,7 @@ while not player_dead:
 	if player.health <= 0:
 		player_dead = True
 	elif player.health <= max_health:
-		player.health += 0.02
+		player.health += 100
 
 
 print(score)

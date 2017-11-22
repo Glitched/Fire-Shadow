@@ -27,7 +27,7 @@ class WizardShot(Projectile):
 		elif dirn == constants.DOWN:
 			sprite = images.wizard_shot_down
 
-		super().__init__(sprite, constants.WIZARD_SHOT_SPEED, constants.WIZARD_SHOT_DAMAGE, x + 32, y - 32, dirn)
+		super().__init__(sprite, constants.WIZARD_SHOT_SPEED, constants.WIZARD_SHOT_DAMAGE, x, y, dirn)
 
 	def getX(self):
 		return self.x
@@ -49,7 +49,6 @@ class WizardShot(Projectile):
 
 	def update(self, game_display):
 		
-		# TODO: Get sprites for different directions and use them to update
 		dirn = self.getDirn()
 		if dirn == constants.LEFT:
 			self.x -= self.speed

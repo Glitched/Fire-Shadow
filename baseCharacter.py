@@ -37,6 +37,7 @@ class Character(object):
         self.facing = arg
 
     def flipScript(self, key):
+
         if key == 'a':
             if self.getFacing() != constants.LEFT:
                 self.setFacing(constants.LEFT)
@@ -68,9 +69,6 @@ class Character(object):
                 self.sprite = images.wizard_left
             elif prevDir == constants.RIGHT:
                 self.sprite = images.wizard
-
-
-        pass
 
 
     

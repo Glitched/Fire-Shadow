@@ -17,7 +17,7 @@ def draw_board(width, height, screen, player, enemies, projectiles, towers, ligh
 	screen.blit(light_map, (0, 0), special_flags=pygame.BLEND_RGBA_SUB)
 
 	# Place player
-	screen.blit(player.sprite, (player.x + constants.TILE_SIZE, player.y - constants.TILE_SIZE))
+	screen.blit(player.sprite, (player.x, player.y))
 
 
 def generate_grid(width, height):
@@ -49,7 +49,7 @@ def place_objects(width, height, screen, enemies, lights):
 	"""
 
 	for badguy in enemies:
-		screen.blit(badguy.sprite, (badguy.x + constants.TILE_SIZE, badguy.y - constants.TILE_SIZE))
+		screen.blit(badguy.sprite, (badguy.x, badguy.y))
 
 	# campfire image
 	screen.blit(animation.campfire_flicker(constants.FLICKER_I), (width / 2, height / 2))
