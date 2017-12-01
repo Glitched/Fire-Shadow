@@ -51,7 +51,7 @@ dx = 0
 dy = 0
 
 # Making player
-player = baseCharacter.Wizard(player_x, player_y, 20, 100, 100, 100, 100, 100, 100)
+player = baseCharacter.Wizard(player_x, player_y, 20, 100, 100, 100, 100, 0, [])
 prevDir = constants.RIGHT
 max_health = player.health
 
@@ -151,9 +151,6 @@ while start_screen:
 	game_display.blit(images.title_screen,(0,0))
 	pygame.display.update()
 
-
-
-
 #Main game loop
 while not player_dead:
 
@@ -217,7 +214,7 @@ while not player_dead:
 	if player.health <= 0:
 		player_dead = True
 	elif player.health <= max_health:
-		player.health += 100
+		player.health += constants.PLAYER_HEALTH_INCREMENT
 
 
 print(score)
