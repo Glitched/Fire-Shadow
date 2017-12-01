@@ -2,6 +2,7 @@ import pygame
 
 #Main Screen
 title_screen = pygame.image.load('images/title.png')
+death_overlay = pygame.image.load('images/deathOverlay.png')
 
 # Wizard
 wizard = pygame.image.load('images/wizard.png')

@@ -9,9 +9,9 @@ from HUD import *
 TODO LIST:
 
 - Implement a debug mode DONE 01-Dec-17
-- Implement a start screen (nothing fancy yet necessarily, but something functional)
+- Implement a start screen (nothing fancy yet necessarily, but something functional) DONE 01-Dec-17
 - Implement a dying screen
-- Find a new font (Check google fonts)
+- Find a new font (Check google fonts) DONE 01-Dec-17
 - Branding work: Logo and other shit
 - Towers that shoot/ different ideas/ power up towers (beacons)
 - GUI rework
@@ -35,6 +35,7 @@ clock = pygame.time.Clock()
 player_dead = False
 start_screen = True
 debug_mode = False
+quitting_bool = False
 
 projectiles = []
 enemies = []
@@ -206,15 +207,29 @@ while not player_dead:
 				item.cooldown -= 1
 
 	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, debug_mode)
-	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.health)
+	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score)
 	debug_mode_script()
 	pygame.display.update()
 	clock.tick(24)
 
-	if player.health <= 0:
+	if player.getHealth() <= 0:
+		player.setHealth(0)
 		player_dead = True
+		quitting_bool = True
 	elif player.health <= max_health:
 		player.health += constants.PLAYER_HEALTH_INCREMENT
+
+while quitting_bool:
+
+	
+	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, debug_mode)
+	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score)
+	game_display.blit(images.death_overlay,(0,0))
+	pygame.display.flip()
+
+	for event in pygame.event.get():
+		if event.type == pygame.KEYDOWN:
+			quitting_bool = False
 
 
 print(score)
