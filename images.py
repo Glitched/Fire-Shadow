@@ -1,5 +1,8 @@
 import pygame
 
+#Main Screen
+title_screen = pygame.image.load('images/title.png')
+
 # Wizard
 wizard = pygame.image.load('images/wizard.png')
 wizard_left = pygame.image.load('images/wizard_left.png')

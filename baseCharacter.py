@@ -94,7 +94,6 @@ class PlayerCharacter(Character):
     def addToPurchases(self, arg):
         self.purchases.append(arg)
 
-    #TODO: Implement getters and setters for gold(int) and purchases (list)
 
 class Wizard(PlayerCharacter):
 

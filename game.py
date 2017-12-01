@@ -8,7 +8,7 @@ from HUD import *
 """
 TODO LIST:
 
-- Implement a debug mode 
+- Implement a debug mode DONE 01-Dec-17
 - Implement a start screen (nothing fancy yet necessarily, but something functional)
 - Implement a dying screen
 - Find a new font (Check google fonts)
@@ -33,6 +33,7 @@ pygame.display.set_caption('Fire & Shadow')
 clock = pygame.time.Clock()
 
 player_dead = False
+start_screen = True
 debug_mode = False
 
 projectiles = []
@@ -142,7 +143,18 @@ def update_player_location():
 	player.setX(player_x)
 	player.setY(player_y)
 
+#Start screen loop
+while start_screen:
+	for event in pygame.event.get():
+		if event.type == pygame.KEYDOWN:
+			start_screen = False
+	game_display.blit(images.title_screen,(0,0))
+	pygame.display.update()
 
+
+
+
+#Main game loop
 while not player_dead:
 
 	for event in pygame.event.get():
