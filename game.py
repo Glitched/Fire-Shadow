@@ -122,7 +122,7 @@ def debug_mode_script():
 		player.setGold(99999)
 		for badguy in enemies:
 			badguy.setDamage(0)
-		print("FPS: ", clock.get_fps)
+		# print("FPS: ", clock.get_fps)
 	
 
 
@@ -174,6 +174,11 @@ while not player_dead:
 			location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
 			enemies.append(enemy.StrongZombie(location[0], location[1]))
 
+	if seconds > 0 and frame == 12 and ((seconds - 6) % 12 == 0):
+		for _ in range(0, int((seconds - 6) / 12)):
+			location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+			enemies.append(enemy.SpeedZombie(location[0], location[1]))
+
 	update_player_location()
 
 	# Deal damage to bad guys
@@ -212,7 +217,7 @@ while not player_dead:
 				item.cooldown -= 1
 
 	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, debug_mode)
-	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, debug_mode)
+	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
 
 	debug_mode_script()
 	pygame.display.update()
@@ -229,7 +234,7 @@ while quitting_bool:
 
 	
 	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, debug_mode)
-	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, seconds, debug_mode)
+	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
 	game_display.blit(images.death_overlay,(0,0))
 	pygame.display.flip()
 

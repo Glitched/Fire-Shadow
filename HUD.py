@@ -1,4 +1,4 @@
-def draw_hud(screen, font, height, money, health, score, frame, debug_mode):
+def draw_hud(screen, font, height, money, health, score, frame, seconds, debug_mode):
 	# Money
 	text = font.render("Gold: " + str(money), True, (255, 255, 255))
 	textrect = text.get_rect()
@@ -22,8 +22,8 @@ def draw_hud(screen, font, height, money, health, score, frame, debug_mode):
 
 	# Frame
 	if debug_mode:
-		frame_display = font.render("Frame: " + str(frame), True, (255,255,255))
+		frame_display = font.render("Frame: " + str(seconds) + "." + str(frame), True, (255,255,255))
 		frame_rect = score_display.get_rect()
 		frame_rect.top = height - 30
-		frame_rect.left = 1200
+		frame_rect.left = 1180
 		screen.blit(frame_display, frame_rect)
