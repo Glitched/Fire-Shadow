@@ -21,6 +21,7 @@ wizard_attack_down = pygame.image.load('images/wizard-attack-down.png')
 # Enemies
 # Zombie
 zombie = pygame.image.load('images/zombie.png')
+zombie_strong = pygame.image.load('images/zombie-strong.png')
 
 tile = pygame.image.load('images/tile.png')
 

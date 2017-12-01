@@ -59,3 +59,9 @@ class Zombie(Enemy):
 
 	def __init__(self, x, y):
 		super().__init__(images.zombie, 2, 1, 5, x, y)
+
+
+class StrongZombie(Enemy):
+
+	def __init__(self, x, y):
+		super().__init__(images.zombie_strong, 1, 2, 10, x, y)

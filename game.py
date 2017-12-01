@@ -169,6 +169,11 @@ while not player_dead:
 		location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
 		enemies.append(enemy.Zombie(location[0], location[1]))
 
+	if seconds > 0 and frame == 12 and seconds % 12 == 0:
+		for _ in range(0, int(seconds / 12)):
+			location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+			enemies.append(enemy.StrongZombie(location[0], location[1]))
+
 	update_player_location()
 
 	# Deal damage to bad guys
@@ -207,7 +212,8 @@ while not player_dead:
 				item.cooldown -= 1
 
 	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, debug_mode)
-	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score)
+	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, debug_mode)
+
 	debug_mode_script()
 	pygame.display.update()
 	clock.tick(24)
@@ -223,7 +229,7 @@ while quitting_bool:
 
 	
 	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, debug_mode)
-	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score)
+	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, seconds, debug_mode)
 	game_display.blit(images.death_overlay,(0,0))
 	pygame.display.flip()
 
