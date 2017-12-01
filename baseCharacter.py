@@ -82,6 +82,18 @@ class PlayerCharacter(Character):
         self.gold = gold
         self.purchases = purchases
 
+    def getGold(self):
+        return self.gold
+
+    def setGold(self, arg):
+        self.gold = arg
+
+    def getPurchases(self):
+        return self.purchases
+
+    def addToPurchases(self, arg):
+        self.purchases.append(arg)
+
     #TODO: Implement getters and setters for gold(int) and purchases (list)
 
 class Wizard(PlayerCharacter):

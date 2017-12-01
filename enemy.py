@@ -30,6 +30,18 @@ class Enemy(object):
 		self.x = x
 		self.y = y
 
+	def setHealth(self, arg):
+		self.health = arg
+
+	def getHealth(self):
+		return self.health
+
+	def setDamage(self, arg):
+		self.damage = arg
+
+	def getDamage(self):
+		return self.damage
+
 	def update(self, playerX, playerY):
 		for i in range(0, self.speed):
 			if playerX > self.x:

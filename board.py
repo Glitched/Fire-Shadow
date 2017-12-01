@@ -5,7 +5,7 @@ import animation
 import pygame
 
 
-def draw_board(width, height, screen, player, enemies, projectiles, towers, lights, light_map):
+def draw_board(width, height, screen, player, enemies, projectiles, towers, lights, light_map, debug_mode):
 	grid = generate_grid(width, height)
 
 	place_tiles(screen, grid)
@@ -14,7 +14,8 @@ def draw_board(width, height, screen, player, enemies, projectiles, towers, ligh
 	place_objects(width, height, screen, enemies, lights)
 
 	# Draw lighting
-	screen.blit(light_map, (0, 0), special_flags=pygame.BLEND_RGBA_SUB)
+	if not debug_mode:
+		screen.blit(light_map, (0, 0), special_flags=pygame.BLEND_RGBA_SUB)
 
 	# Place player
 	screen.blit(player.sprite, (player.x, player.y))

@@ -1,6 +1,6 @@
 def draw_hud(screen, font, height, money, health):
 	# Money
-	text = font.render("Money: " + str(money), True, (255, 255, 255))
+	text = font.render("Gold: " + str(money), True, (255, 255, 255))
 	textrect = text.get_rect()
 	textrect.top = 10
 	textrect.left = 10

@@ -33,6 +33,7 @@ pygame.display.set_caption('Fire & Shadow')
 clock = pygame.time.Clock()
 
 player_dead = False
+debug_mode = False
 
 projectiles = []
 enemies = []
@@ -57,7 +58,7 @@ frame = 0
 seconds = 0
 
 score = 0
-money = 0
+
 
 basicfont = pygame.font.SysFont(None, 22)
 
@@ -66,7 +67,8 @@ pygame.mixer.music.play(-1)
 
 
 def handle_key():
-	global dx, prevDir, dy, light_map, money
+	global dx, prevDir, dy, light_map, debug_mode
+	currGold = player.getGold()
 	if event.type == pygame.KEYDOWN:
 
 		if event.key == pygame.K_a:
@@ -88,15 +90,22 @@ def handle_key():
 			projectiles.append(player.attack())
 
 		if event.key == pygame.K_t:
-			if money >= 40:
-				money -= 40
+			if currGold >= 40:
+				player.setGold(currGold-40)
 				towers.append(tower.Trap(player_x, player_y))
 
 		if event.key == pygame.K_e:
-			if money >= 100:
-				money -= 100
+			if currGold >= 100:
+				player.setGold(currGold - 100)
 				lights.append((player_x, player_y))
 				light_map = add_light(light_map, (player_x, player_y))
+		if event.key == pygame.K_p:
+			print("P pressed")
+			if debug_mode == False:
+				
+				debug_mode = True
+			
+
 	if event.type == pygame.KEYUP:
 		if event.key == pygame.K_a or event.key == pygame.K_d:
 			dx = 0
@@ -105,6 +114,15 @@ def handle_key():
 
 		if event.key == pygame.K_SPACE:
 			player.attack_flip(prevDir)
+
+def debug_mode_script():
+	if debug_mode == True:
+		player.setGold(99999)
+		for badguy in enemies:
+			badguy.setDamage(0)
+		print("FPS: ", clock.get_fps)
+	
+
 
 
 def update_player_location():
@@ -126,6 +144,7 @@ def update_player_location():
 
 
 while not player_dead:
+
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			player_dead = True
@@ -156,7 +175,7 @@ while not player_dead:
 					if badguy.health <= 0:
 						enemies.remove(badguy)
 						score += 1
-						money += 5
+						player.setGold(player.getGold() + 5)
 					break
 
 	# Move bad guys and deal damage to good guy
@@ -177,8 +196,9 @@ while not player_dead:
 			else:
 				item.cooldown -= 1
 
-	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map)
-	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, money, player.health)
+	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, debug_mode)
+	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.health)
+	debug_mode_script()
 	pygame.display.update()
 	clock.tick(24)
 
