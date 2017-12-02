@@ -107,6 +107,11 @@ def handle_key():
 				player.setGold(currGold - 250)
 				towers.append(tower.Freeze(player_x, player_y))
 
+		if event.key == pygame.K_r:
+			if currGold >= 250:
+				player.setGold(currGold - 250)
+				towers.append(tower.Turret(player_x, player_y))
+
 		if event.key == pygame.K_p:
 			print("P pressed")
 			if debug_mode == False:

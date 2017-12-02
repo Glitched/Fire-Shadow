@@ -32,8 +32,12 @@ campfire_2 = pygame.image.load('images/campfire2.png')
 # Towers
 trap = pygame.image.load('images/trap.png')
 trap_disabled = pygame.image.load('images/trap-closed.png')
+
 freeze = pygame.image.load('images/freeze.png')
 frost = pygame.image.load('images/frost.png')
+
+turret = pygame.image.load('images/turret.png')
+turret_shot = pygame.image.load('images/turret-shot.png')
 
 
 # Lighting FX

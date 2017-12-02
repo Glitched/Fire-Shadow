@@ -47,7 +47,7 @@ class WizardShot(Projectile):
 	def setDirn(self, arg):
 		self.dirn = arg
 
-	def update(self, game_display):
+	def update(self):
 		
 		dirn = self.getDirn()
 		if dirn == constants.LEFT:
@@ -59,3 +59,30 @@ class WizardShot(Projectile):
 		if dirn == constants.DOWN:
 			self.y += self.speed
 
+
+class TurretShot(Projectile):
+	def __init__(self, x, y):
+
+		sprite = images.turret_shot
+
+		super().__init__(sprite, 4, 1, x, y, None)
+
+	def getX(self):
+		return self.x
+
+	def setX(self, arg):
+		self.x = arg
+
+	def getY(self):
+		return self.y
+
+	def setY(self, arg):
+		self.y = arg
+
+	def getDirn(self):
+		return self.dirn
+
+	def setDirn(self, arg):
+		self.dirn = arg
+
+	def update(self):
