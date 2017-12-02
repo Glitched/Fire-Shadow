@@ -101,6 +101,12 @@ def handle_key():
 				player.setGold(currGold - 100)
 				lights.append((player_x, player_y))
 				light_map = add_light(light_map, (player_x, player_y))
+
+		if event.key == pygame.K_f:
+			if currGold >= 250:
+				player.setGold(currGold - 250)
+				towers.append(tower.Freeze(player_x, player_y))
+
 		if event.key == pygame.K_p:
 			print("P pressed")
 			if debug_mode == False:
@@ -117,6 +123,7 @@ def handle_key():
 		if event.key == pygame.K_SPACE:
 			player.attack_flip(prevDir)
 
+
 def debug_mode_script():
 	if debug_mode == True:
 		player.setGold(99999)
@@ -124,8 +131,6 @@ def debug_mode_script():
 			badguy.setDamage(0)
 		# print("FPS: ", clock.get_fps)
 	
-
-
 
 def update_player_location():
 	global player_x, player_y
@@ -144,7 +149,8 @@ def update_player_location():
 	player.setX(player_x)
 	player.setY(player_y)
 
-#Start screen loop
+
+# Start screen loop
 while start_screen:
 	for event in pygame.event.get():
 		if event.type == pygame.KEYDOWN:
@@ -152,7 +158,7 @@ while start_screen:
 	game_display.blit(images.title_screen,(0,0))
 	pygame.display.update()
 
-#Main game loop
+# Main game loop
 while not player_dead:
 
 	for event in pygame.event.get():
@@ -204,19 +210,28 @@ while not player_dead:
 		if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20:
 			player.health -= badguy.damage
 
+	fx = []
 	for item in towers:
-		if isinstance(item, tower.Trap):
-			if item.cooldown <= 0:
+		if item.cooldown <= 0:
+			if isinstance(item, tower.Trap):
 				item.sprite = images.trap
 				for badguy in enemies:
-					if abs(badguy.x - item.x) < 20 and abs(badguy.y -  item.y) < 20:
+					if abs(badguy.x - item.x) < 20 and abs(badguy.y - item.y) < 20:
 						enemies.remove(badguy)
 						item.sprite = images.trap_disabled
 						item.cooldown = 48
-			else:
-				item.cooldown -= 1
+			elif isinstance(item, tower.Freeze):
+				for badguy in enemies:
+					if abs(badguy.x - item.x) < 64 and abs(badguy.y - item.y) < 64:
+						if badguy.speed != 0:
+							fx.append((item.x - 48, item.y - 48))
+							badguy.speed = 0
+							item.cooldown = 24
+							break
+		else:
+			item.cooldown -= 1
 
-	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, debug_mode)
+	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
 	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
 
 	debug_mode_script()
@@ -233,7 +248,7 @@ while not player_dead:
 while quitting_bool:
 
 	
-	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, debug_mode)
+	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
 	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
 	game_display.blit(images.death_overlay,(0,0))
 	pygame.display.flip()

@@ -5,11 +5,12 @@ import animation
 import pygame
 
 
-def draw_board(width, height, screen, player, enemies, projectiles, towers, lights, light_map, debug_mode):
+def draw_board(width, height, screen, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode):
 	grid = generate_grid(width, height)
 
 	place_tiles(screen, grid)
 	place_towers(towers, screen)
+	draw_fx(fx, screen)
 	draw_projectiles(projectiles, screen)
 	place_objects(width, height, screen, enemies, lights)
 
@@ -32,6 +33,11 @@ def generate_grid(width, height):
 def draw_projectiles(projectiles, screen):
 	for projectile in projectiles:
 		screen.blit(projectile.sprite, (projectile.getX(), projectile.getY()))
+
+
+def draw_fx(fx, screen):
+	for effect in fx:
+		screen.blit(images.frost, effect, special_flags=pygame.BLEND_ADD)
 
 
 def place_tiles(screen, grid):
