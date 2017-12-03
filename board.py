@@ -1,4 +1,3 @@
-import random
 import images
 import constants
 import animation

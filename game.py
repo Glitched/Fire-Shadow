@@ -72,7 +72,7 @@ pygame.mixer.music.play(-1)
 
 
 def handle_key():
-	global dx, prevDir, dy, light_map, debug_mode
+	global dx, prevDir, dy, light_map, seconds, debug_mode
 	currGold = player.getGold()
 	if event.type == pygame.KEYDOWN:
 
@@ -120,13 +120,15 @@ def handle_key():
 					player.setGold(currGold - 250)
 					towers.append(tower.Turret(player_x, player_y))
 
+		if event.key == pygame.K_o and debug_mode:
+			seconds *= 2
+
 		if event.key == pygame.K_p:
 			print("Debug mode toggled")
 			if debug_mode == False:
 				debug_mode = True
 			elif debug_mode == True:
 				debug_mode = False
-			
 
 	if event.type == pygame.KEYUP:
 		if event.key == pygame.K_a or event.key == pygame.K_d:
@@ -272,8 +274,6 @@ while not player_dead:
 		player.health += constants.PLAYER_HEALTH_INCREMENT
 
 while quitting_bool:
-
-	
 	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
 	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
 	game_display.blit(images.death_overlay,(0,0))
