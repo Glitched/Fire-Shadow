@@ -64,12 +64,12 @@ class WizardShot(Projectile):
 class TurretShot(Projectile):
 	def __init__(self, x, y, dirn, posy, posx):
 
-		sprite = rot_center(images.turret_shot, round(math.degrees(dirn)))
-		self.dirn = abs(dirn)
+		sprite = rot_center(images.turret_shot, -round(math.degrees(dirn)))
+		self.dirn = dirn
 		self.posy = posy
 		self.posx = posx
 
-		super().__init__(sprite, 8, 1, x, y, dirn)
+		super().__init__(sprite, 16, 1, x, y, dirn)
 
 	def getX(self):
 		return self.x
@@ -88,13 +88,13 @@ class TurretShot(Projectile):
 
 	def update(self):
 		if self.posx:
-			self.x += self.speed * math.cos(self.dirn)
+			self.x += self.speed * abs(math.cos(self.dirn))
 		else:
-			self.x -= self.speed * math.cos(self.dirn)
+			self.x -= self.speed * abs(math.cos(self.dirn))
 		if self.posy:
-			self.y += self.speed * math.sin(self.dirn)
+			self.y += self.speed * abs(math.sin(self.dirn))
 		else:
-			self.y -= self.speed * math.sin(self.dirn)
+			self.y -= self.speed * abs(math.sin(self.dirn))
 
 
 def rot_center(image, angle):

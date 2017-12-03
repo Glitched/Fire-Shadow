@@ -239,7 +239,7 @@ while not player_dead:
 				for badguy in enemies:
 					if abs(badguy.x - item.x) < 92 and abs(badguy.y - item.y) < 92:
 						if badguy.speed != 0:
-							item.cooldown = 6
+							item.cooldown = 4
 							proj = projectile.TurretShot(
 								item.x, item.y,
 								math.atan((badguy.y - item.y)/(0.0001 + badguy.x - item.x)),

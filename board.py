@@ -59,13 +59,14 @@ def place_objects(width, height, screen, enemies, lights):
 		screen.blit(badguy.sprite, (badguy.x, badguy.y))
 
 	# campfire image
-	screen.blit(animation.campfire_flicker(constants.FLICKER_I), (width / 2, height / 2))
+	current_image = animation.campfire_flicker(constants.FLICKER_I)
+	screen.blit(current_image, (width / 2, height / 2))
 	constants.FLICKER_I += 1
 	if constants.FLICKER_I == 20:
 		constants.FLICKER_I = 1
 
 	for light in lights:
-		screen.blit(animation.campfire_flicker(constants.FLICKER_I + random.randint(-2,2)), light)
+		screen.blit(current_image, light)
 
 
 def generate_light_surface(width, height, lights):
