@@ -115,10 +115,11 @@ def handle_key():
 				towers.append(tower.Turret(player_x, player_y))
 
 		if event.key == pygame.K_p:
-			print("P pressed")
+			print("Debug mode on")
 			if debug_mode == False:
-				
 				debug_mode = True
+			elif debug_mode == True:
+				debug_mode = False
 			
 
 	if event.type == pygame.KEYUP:
@@ -134,8 +135,8 @@ def handle_key():
 def debug_mode_script():
 	if debug_mode == True:
 		player.setGold(99999)
-		for badguy in enemies:
-			badguy.setDamage(0)
+	elif debug_mode == False:
+		player.setGold(50)
 		# print("FPS: ", clock.get_fps)
 	
 
@@ -214,7 +215,7 @@ while not player_dead:
 	# Move bad guys and deal damage to good guy
 	for badguy in enemies:
 		badguy.update(player_x, player_y)
-		if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20:
+		if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20 and not debug_mode:
 			player.health -= badguy.damage
 
 	fx = []
