@@ -274,7 +274,8 @@ while quitting_bool:
 
 	for event in pygame.event.get():
 		if event.type == pygame.KEYDOWN:
-			quitting_bool = False
+			if event.key == pygame.K_q:
+				quitting_bool = False
 
 
 print(score)
