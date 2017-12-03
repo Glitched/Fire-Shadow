@@ -43,6 +43,7 @@ projectiles = []
 enemies = []
 towers = []
 lights = [(DISPLAY_WIDTH/2, DISPLAY_HEIGHT /2)]
+towers_position_array = []
 
 light_map = generate_light_surface(DISPLAY_WIDTH, DISPLAY_HEIGHT, lights)
 
@@ -94,28 +95,33 @@ def handle_key():
 			projectiles.append(player.attack())
 
 		if event.key == pygame.K_t:
-			if currGold >= 40:
-				player.setGold(currGold-40)
-				towers.append(tower.Trap(player_x, player_y))
+			if currGold >= 40 and (player_x, player_y) not in towers_position_array:
+					player.setGold(currGold-40)
+					towers_position_array.append((player_x,player_y))
+					towers.append(tower.Trap(player_x, player_y))
+
 
 		if event.key == pygame.K_e:
-			if currGold >= 100:
-				player.setGold(currGold - 100)
-				lights.append((player_x, player_y))
-				light_map = add_light(light_map, (player_x, player_y))
+			if currGold >= 100 and (player_x, player_y) not in towers_position_array:
+					player.setGold(currGold - 100)
+					towers_position_array.append((player_x,player_y))
+					lights.append((player_x, player_y))
+					light_map = add_light(light_map, (player_x, player_y))
 
 		if event.key == pygame.K_f:
-			if currGold >= 250:
-				player.setGold(currGold - 250)
-				towers.append(tower.Freeze(player_x, player_y))
+			if currGold >= 250 and (player_x, player_y) not in towers_position_array:
+					player.setGold(currGold - 250)
+					towers_position_array.append((player_x,player_y))
+					towers.append(tower.Freeze(player_x, player_y))
 
 		if event.key == pygame.K_r:
-			if currGold >= 250:
-				player.setGold(currGold - 250)
-				towers.append(tower.Turret(player_x, player_y))
+			if currGold >= 250 and (player_x, player_y) not in towers_position_array:
+					towers_position_array.append((player_x,player_y))
+					player.setGold(currGold - 250)
+					towers.append(tower.Turret(player_x, player_y))
 
 		if event.key == pygame.K_p:
-			print("Debug mode on")
+			print("Debug mode toggled")
 			if debug_mode == False:
 				debug_mode = True
 			elif debug_mode == True:
