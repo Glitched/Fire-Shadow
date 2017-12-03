@@ -3,6 +3,8 @@ import baseCharacter
 import enemy
 import tower
 import images
+import projectile
+import math
 from board import *
 from HUD import *
 """
@@ -198,7 +200,7 @@ while not player_dead:
 			or proj.getY() >= DISPLAY_HEIGHT or proj.getY() <= 0:
 			projectiles.remove(proj)
 		else:
-			proj.update(game_display)
+			proj.update()
 			for badguy in enemies:
 				if abs((proj.getX()) - badguy.x ) < 20 and abs((proj.getY()) - badguy.y) < 20:
 					badguy.health -= proj.damage
@@ -232,6 +234,14 @@ while not player_dead:
 							fx.append((item.x - 48, item.y - 48))
 							badguy.speed = 0
 							item.cooldown = 24
+							break
+			elif isinstance(item, tower.Turret):
+				for badguy in enemies:
+					if abs(badguy.x - item.x) < 92 and abs(badguy.y - item.y) < 92:
+						if badguy.speed != 0:
+							item.cooldown = 6
+							proj = projectile.TurretShot(item.x, item.y, math.atan((badguy.y - item.y)/(0.0001 + badguy.x - item.x)))
+							projectiles.append(proj)
 							break
 		else:
 			item.cooldown -= 1

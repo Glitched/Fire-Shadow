@@ -1,6 +1,6 @@
 import pygame
 import images
-import projectiles
+import projectile
 import constants
 
 
@@ -105,7 +105,7 @@ class Wizard(PlayerCharacter):
         x = self.getX()
         y = self.getY()
         dirn = self.getFacing()
-        new_proj = projectiles.WizardShot(x, y, dirn)
+        new_proj = projectile.WizardShot(x, y, dirn)
 
         if dirn == constants.LEFT:
             self.sprite = images.wizard_attack_left

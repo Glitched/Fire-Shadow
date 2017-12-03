@@ -1,5 +1,6 @@
 import pygame
 import images
+import math
 import constants
 
 
@@ -61,11 +62,12 @@ class WizardShot(Projectile):
 
 
 class TurretShot(Projectile):
-	def __init__(self, x, y):
+	def __init__(self, x, y, dirn):
 
-		sprite = images.turret_shot
+		sprite = rot_center(images.turret_shot, round(math.degrees(dirn)))
+		self.dirn = dirn
 
-		super().__init__(sprite, 4, 1, x, y, None)
+		super().__init__(sprite, 8, 1, x, y, dirn)
 
 	def getX(self):
 		return self.x
@@ -82,7 +84,16 @@ class TurretShot(Projectile):
 	def getDirn(self):
 		return self.dirn
 
-	def setDirn(self, arg):
-		self.dirn = arg
-
 	def update(self):
+		self.x += self.speed * math.cos(self.dirn)
+		self.y += self.speed * math.sin(self.dirn)
+
+
+def rot_center(image, angle):
+    """rotate an image while keeping its center and size"""
+    orig_rect = image.get_rect()
+    rot_image = pygame.transform.rotate(image, angle)
+    rot_rect = orig_rect.copy()
+    rot_rect.center = rot_image.get_rect().center
+    rot_image = rot_image.subsurface(rot_rect).copy()
+    return rot_image
