@@ -10,7 +10,6 @@ from HUD import *
 """
 TODO LIST:
 
-
 - Branding work: Logo and other shit
 - Towers that shoot/ different ideas/ power up towers (beacons)
 - GUI rework
@@ -19,11 +18,13 @@ TODO LIST:
 - Wave systems
 - Hearts instead of health number (Ten hearts, divisible in half)
 - Per Tower Upgrades
-- Character Upgrades
 - Sprites for character upgrades
 - Better path detection
+- Play Again option
+- Better Anti-Tower Stacking
 
 DONE LIST: 
+- Character Upgrades 17-Dec-17
 - Implement a debug mode DONE 01-Dec-17
 - Implement a start screen (nothing fancy yet necessarily, but something functional) DONE 01-Dec-17
 - Implement a dying screen
@@ -53,8 +54,6 @@ projectiles = []
 enemies = []
 towers = []
 lights = [(DISPLAY_WIDTH/2, DISPLAY_HEIGHT /2)]
-towers_position_array = []
-
 light_map = generate_light_surface(DISPLAY_WIDTH, DISPLAY_HEIGHT, lights)
 
 # movement related mechanics
@@ -132,24 +131,20 @@ def handle_build_keys():
 		if event.type == pygame.KEYDOWN:
 
 			if event.key == pygame.K_t:
-				if buy(40) and (player_x, player_y) not in towers_position_array:
-					towers_position_array.append((player_x, player_y))
+				if buy(40) and not tower_is_overlapping():
 					towers.append(tower.Trap(player_x, player_y))
 
 			if event.key == pygame.K_g:
-				if buy(100) and (player_x, player_y) not in towers_position_array:
-					towers_position_array.append((player_x, player_y))
+				if buy(100) and not tower_is_overlapping():
 					lights.append((player_x, player_y))
 					light_map = add_light(light_map, (player_x, player_y))
 
 			if event.key == pygame.K_f:
-				if buy(250) and (player_x, player_y) not in towers_position_array:
-					towers_position_array.append((player_x, player_y))
+				if buy(250) and not tower_is_overlapping():
 					towers.append(tower.Freeze(player_x, player_y))
 
 			if event.key == pygame.K_r:
-				if buy(250) and (player_x, player_y) not in towers_position_array:
-					towers_position_array.append((player_x, player_y))
+				if buy(250) and not tower_is_overlapping():
 					towers.append(tower.Turret(player_x, player_y))
 
 			if event.key == pygame.K_d:
@@ -165,6 +160,15 @@ def handle_build_keys():
 
 			if event.key == pygame.K_e:
 				build_mode = False
+
+
+def tower_is_overlapping():
+	global build_mode
+	for item in towers:
+		if abs(item.x - player.x) < 20 and abs(item.y - player.y) < 20:
+			build_mode = True
+			return True
+	return False
 
 
 def buy(price):
@@ -186,11 +190,11 @@ def update_player_location():
 	player_x += dx
 	player_y += dy
 
-	if player_x >= DISPLAY_WIDTH-constants.TILE_SIZE:
-		player_x = DISPLAY_WIDTH- constants.TILE_SIZE
+	if player_x >= DISPLAY_WIDTH - constants.TILE_SIZE:
+		player_x = DISPLAY_WIDTH - constants.TILE_SIZE
 	if player_x <= 0:
 		player_x = 0
-	if player_y >= DISPLAY_HEIGHT-constants.TILE_SIZE:
+	if player_y >= DISPLAY_HEIGHT - constants.TILE_SIZE:
 		player_y = DISPLAY_HEIGHT- constants.TILE_SIZE
 	if player_y <= 0:
 		player_y = 0
