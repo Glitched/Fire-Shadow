@@ -65,7 +65,7 @@ dx = 0
 dy = 0
 
 # Making player
-player = baseCharacter.Wizard(player_x, player_y, 20, 100, 100, 100, 100, 0, [])
+player = baseCharacter.Wizard(player_x, player_y, 20, constants.CHAR_SPEED, constants.WIZARD_SHOT_DAMAGE, 100, 100, 0, [])
 prevDir = constants.RIGHT
 max_health = player.health
 
@@ -86,18 +86,18 @@ def handle_movement():
 
 	if event.type == pygame.KEYDOWN:
 		if event.key == pygame.K_a:
-			dx = -constants.CHAR_SPEED
+			dx = -player.speed
 			player.flipScript("a")
 			prevDir = constants.LEFT
 		elif event.key == pygame.K_d:
-			dx = constants.CHAR_SPEED
+			dx = player.speed
 			player.flipScript("d")
 			prevDir = constants.RIGHT
 		if event.key == pygame.K_w:
-			dy = -constants.CHAR_SPEED
+			dy = -player.speed
 			player.flipScript("w")
 		elif event.key == pygame.K_s:
-			dy = constants.CHAR_SPEED
+			dy = player.speed
 			player.flipScript("s")
 
 		if event.key == pygame.K_SPACE:
@@ -124,9 +124,11 @@ def handle_movement():
 
 
 def handle_build_keys():
-	global build_mode, light_map
+	global build_mode, light_map, player_dead
 
 	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			player_dead = True
 		if event.type == pygame.KEYDOWN:
 
 			if event.key == pygame.K_t:
@@ -175,11 +177,8 @@ def buy(price):
 
 
 def debug_mode_script():
-	if debug_mode == True:
+	if debug_mode:
 		player.setGold(100000)
-	# elif debug_mode == False:
-		# player.setGold(50)
-		# print("FPS: ", clock.get_fps)
 	
 
 def update_player_location():

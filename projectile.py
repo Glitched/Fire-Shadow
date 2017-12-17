@@ -18,7 +18,7 @@ class Projectile(object):
 
 class WizardShot(Projectile):
 
-	def __init__(self, x, y, dirn):
+	def __init__(self, x, y, dirn, atk):
 
 		sprite = images.wizard_shot
 		if dirn == constants.LEFT:
@@ -28,7 +28,7 @@ class WizardShot(Projectile):
 		elif dirn == constants.DOWN:
 			sprite = images.wizard_shot_down
 
-		super().__init__(sprite, constants.WIZARD_SHOT_SPEED, constants.WIZARD_SHOT_DAMAGE, x, y, dirn)
+		super().__init__(sprite, constants.WIZARD_SHOT_SPEED, atk, x, y, dirn)
 
 	def getX(self):
 		return self.x

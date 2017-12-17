@@ -6,11 +6,13 @@ import constants
 
 class Character(object):
 
-    def __init__(self, x, y, maxHealth, speed, atk, defence, rng):
+    def __init__(self, x, y, max_health, speed, atk, defence, rng):
         self.x = x
         self.y = y
-        self.health = maxHealth
+        self.health = max_health
         self.facing = constants.RIGHT
+        self.atk = atk
+        self.speed = speed
 
     def getX(self):
         return self.x
@@ -75,10 +77,11 @@ class Character(object):
 
     # TODO: Implement getters and setters for the rest of these functions
 
+
 class PlayerCharacter(Character):
 
-    def __init__(self,x,y,maxHealth,speed,atk,defence,rng,gold,purchases):
-        super().__init__(x,y,maxHealth,speed,atk,defence,rng)
+    def __init__(self, x, y, max_health, speed, atk, defence, rng, gold, purchases):
+        super().__init__(x, y, max_health, speed, atk, defence, rng)
         self.gold = gold
         self.purchases = purchases
 
@@ -97,15 +100,15 @@ class PlayerCharacter(Character):
 
 class Wizard(PlayerCharacter):
 
-    def __init__(self, x, y, maxHealth, speed, atk, defence, rng, gold, purchases):
-        super().__init__(x, y, maxHealth, speed, atk, defence, rng, gold, purchases) 
+    def __init__(self, x, y, max_health, speed, atk, defence, rng, gold, purchases):
+        super().__init__(x, y, max_health, speed, atk, defence, rng, gold, purchases)
         self.sprite = images.wizard
 
     def attack(self):
         x = self.getX()
         y = self.getY()
         dirn = self.getFacing()
-        new_proj = projectile.WizardShot(x, y, dirn)
+        new_proj = projectile.WizardShot(x, y, dirn, self.atk)
 
         if dirn == constants.LEFT:
             self.sprite = images.wizard_attack_left
