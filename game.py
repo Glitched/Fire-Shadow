@@ -111,7 +111,6 @@ def handle_movement():
 			debug_mode = not debug_mode
 
 		if event.key == pygame.K_e:
-			print("Build mode enabled")
 			build_mode = True
 
 	if event.type == pygame.KEYUP:
@@ -127,62 +126,52 @@ def handle_movement():
 def handle_build_keys():
 	global build_mode, light_map
 
-	currGold = player.getGold()
-
 	for event in pygame.event.get():
 		if event.type == pygame.KEYDOWN:
 
 			if event.key == pygame.K_t:
-				if currGold >= 40 and (player_x, player_y) not in towers_position_array:
-					player.setGold(currGold - 40)
+				if buy(40) and (player_x, player_y) not in towers_position_array:
 					towers_position_array.append((player_x, player_y))
 					towers.append(tower.Trap(player_x, player_y))
-					build_mode = False
 
-			if event.key == pygame.K_f:
-				if currGold >= 100 and (player_x, player_y) not in towers_position_array:
-					player.setGold(currGold - 100)
+			if event.key == pygame.K_g:
+				if buy(100) and (player_x, player_y) not in towers_position_array:
 					towers_position_array.append((player_x, player_y))
 					lights.append((player_x, player_y))
 					light_map = add_light(light_map, (player_x, player_y))
-					build_mode = False
 
-			if event.key == pygame.K_e:
-				if currGold >= 250 and (player_x, player_y) not in towers_position_array:
-					player.setGold(currGold - 250)
+			if event.key == pygame.K_f:
+				if buy(250) and (player_x, player_y) not in towers_position_array:
 					towers_position_array.append((player_x, player_y))
 					towers.append(tower.Freeze(player_x, player_y))
-					build_mode = False
 
 			if event.key == pygame.K_r:
-				if currGold >= 250 and (player_x, player_y) not in towers_position_array:
+				if buy(250) and (player_x, player_y) not in towers_position_array:
 					towers_position_array.append((player_x, player_y))
-					player.setGold(currGold - 250)
 					towers.append(tower.Turret(player_x, player_y))
-					build_mode = False
 
 			if event.key == pygame.K_d:
-				if currGold >= 500:
-					player.setGold(currGold - 500)
+				if buy(400):
 					player.atk = 1.5 * player.atk
-					build_mode = False
 
 			if event.key == pygame.K_c:
-				if currGold >= 400:
-					player.setGold(currGold - 400)
+				if buy(400):
 					player.speed = 1.5 * player.speed
-					build_mode = False
 
 			if event.key == pygame.K_x:
-				if currGold >= 600:
-					player.setGold(currGold - 600)
-					build_mode = False
+				buy(600)
 
-			if event.key == pygame.K_q:
+			if event.key == pygame.K_e:
 				build_mode = False
 
-# def buy_tower():
 
+def buy(price):
+	global build_mode
+	if player.gold >= price:
+		player.setGold(player.gold - price)
+		build_mode = False
+		return True
+	return False
 
 
 def debug_mode_script():
@@ -275,33 +264,30 @@ while not player_dead:
 		fx = []
 		for item in towers:
 			if item.cooldown <= 0:
+				item.cooldown = item.max_cooldown
 				if isinstance(item, tower.Trap):
 					item.sprite = images.trap
 					for badguy in enemies:
 						if abs(badguy.x - item.x) < 20 and abs(badguy.y - item.y) < 20:
 							enemies.remove(badguy)
 							item.sprite = images.trap_disabled
-							item.cooldown = 48
+							break
 				elif isinstance(item, tower.Freeze):
 					for badguy in enemies:
-						if abs(badguy.x - item.x) < 64 and abs(badguy.y - item.y) < 64:
-							if badguy.speed != 0:
-								fx.append((item.x - 48, item.y - 48))
-								badguy.speed = 0
-								item.cooldown = 24
-								break
+						if abs(badguy.x - item.x) < 64 and abs(badguy.y - item.y) < 64 and badguy.speed != 0:
+							fx.append((item.x - 48, item.y - 48))
+							badguy.speed = 0
+							break
 				elif isinstance(item, tower.Turret):
 					for badguy in enemies:
 						if abs(badguy.x - item.x) < 92 and abs(badguy.y - item.y) < 92:
-							if badguy.speed != 0:
-								item.cooldown = 4
-								proj = projectile.TurretShot(
-									item.x, item.y,
-									math.atan((badguy.y - item.y)/(0.0001 + badguy.x - item.x)),
-									(item.y < badguy.y), (item.x < badguy.x)
-								)
-								projectiles.append(proj)
-								break
+							proj = projectile.TurretShot(
+								item.x, item.y,
+								math.atan((badguy.y - item.y)/(0.0001 + badguy.x - item.x)),
+								(item.y < badguy.y), (item.x < badguy.x)
+							)
+							projectiles.append(proj)
+							break
 			else:
 				item.cooldown -= 1
 
@@ -337,7 +323,6 @@ while quitting_bool:
 		if event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_q:
 				quitting_bool = False
-
 
 print(score)
 pygame.quit()
