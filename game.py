@@ -7,6 +7,7 @@ import projectile
 import math
 from board import *
 from HUD import *
+
 """
 TODO LIST:
 
@@ -21,9 +22,9 @@ TODO LIST:
 - Sprites for character upgrades
 - Better path detection
 - Play Again option
-- Better Anti-Tower Stacking
 
 DONE LIST: 
+- Better Anti-Tower Stacking 17-Dec-17
 - Character Upgrades 17-Dec-17
 - Implement a debug mode DONE 01-Dec-17
 - Implement a start screen (nothing fancy yet necessarily, but something functional) DONE 01-Dec-17
@@ -72,7 +73,6 @@ frame = 0
 seconds = 0
 
 score = 0
-
 
 basicfont = pygame.font.SysFont(None, 22)
 

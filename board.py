@@ -5,9 +5,8 @@ import pygame
 
 
 def draw_board(width, height, screen, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode):
-	grid = generate_grid(width, height)
 
-	place_tiles(screen, grid)
+	screen.blit(images.board_background, (0, 0))
 	place_towers(towers, screen)
 	draw_fx(fx, screen)
 	draw_projectiles(projectiles, screen)
@@ -21,14 +20,6 @@ def draw_board(width, height, screen, player, enemies, projectiles, towers, ligh
 	screen.blit(player.sprite, (player.x, player.y))
 
 
-def generate_grid(width, height):
-	new_list = []
-	for x in range(0, width, constants.TILE_SIZE):
-		for y in range(0, height, constants.TILE_SIZE):
-			new_list.append((x, y))
-	return new_list
-
-
 def draw_projectiles(projectiles, screen):
 	for projectile in projectiles:
 		screen.blit(projectile.sprite, (projectile.getX(), projectile.getY()))
@@ -37,11 +28,6 @@ def draw_projectiles(projectiles, screen):
 def draw_fx(fx, screen):
 	for effect in fx:
 		screen.blit(images.frost, effect, special_flags=pygame.BLEND_ADD)
-
-
-def place_tiles(screen, grid):
-	for tup in grid:
-		screen.blit(images.tile, tup)
 
 
 def place_towers(towers, screen):
