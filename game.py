@@ -10,16 +10,25 @@ from HUD import *
 """
 TODO LIST:
 
-- Implement a debug mode DONE 01-Dec-17
-- Implement a start screen (nothing fancy yet necessarily, but something functional) DONE 01-Dec-17
-- Implement a dying screen
-- Find a new font (Check google fonts) DONE 01-Dec-17
+
 - Branding work: Logo and other shit
 - Towers that shoot/ different ideas/ power up towers (beacons)
 - GUI rework
 - Actual pathfinding algorithms
 - Upgrade systems
 - Wave systems
+- Hearts instead of health number (Ten hearts, divisible in half)
+- Per Tower Upgrades
+- Character Upgrades
+- Sprites for character upgrades
+- Better path detection
+
+DONE LIST: 
+- Implement a debug mode DONE 01-Dec-17
+- Implement a start screen (nothing fancy yet necessarily, but something functional) DONE 01-Dec-17
+- Implement a dying screen
+- Find a new font (Check google fonts) DONE 01-Dec-17
+
 """
 
 pygame.init()
@@ -37,6 +46,7 @@ clock = pygame.time.Clock()
 player_dead = False
 start_screen = True
 debug_mode = False
+build_mode = False
 quitting_bool = False
 
 projectiles = []
@@ -71,11 +81,10 @@ pygame.mixer.music.load('music.ogg')
 pygame.mixer.music.play(-1)
 
 
-def handle_key():
-	global dx, prevDir, dy, light_map, seconds, debug_mode
-	currGold = player.getGold()
-	if event.type == pygame.KEYDOWN:
+def handle_movement():
+	global dx, prevDir, dy, debug_mode, seconds, build_mode
 
+	if event.type == pygame.KEYDOWN:
 		if event.key == pygame.K_a:
 			dx = -constants.CHAR_SPEED
 			player.flipScript("a")
@@ -94,41 +103,16 @@ def handle_key():
 		if event.key == pygame.K_SPACE:
 			projectiles.append(player.attack())
 
-		if event.key == pygame.K_t:
-			if currGold >= 40 and (player_x, player_y) not in towers_position_array:
-					player.setGold(currGold-40)
-					towers_position_array.append((player_x,player_y))
-					towers.append(tower.Trap(player_x, player_y))
-
-
-		if event.key == pygame.K_e:
-			if currGold >= 100 and (player_x, player_y) not in towers_position_array:
-					player.setGold(currGold - 100)
-					towers_position_array.append((player_x,player_y))
-					lights.append((player_x, player_y))
-					light_map = add_light(light_map, (player_x, player_y))
-
-		if event.key == pygame.K_f:
-			if currGold >= 250 and (player_x, player_y) not in towers_position_array:
-					player.setGold(currGold - 250)
-					towers_position_array.append((player_x,player_y))
-					towers.append(tower.Freeze(player_x, player_y))
-
-		if event.key == pygame.K_r:
-			if currGold >= 250 and (player_x, player_y) not in towers_position_array:
-					towers_position_array.append((player_x,player_y))
-					player.setGold(currGold - 250)
-					towers.append(tower.Turret(player_x, player_y))
-
 		if event.key == pygame.K_o and debug_mode:
 			seconds *= 2
 
 		if event.key == pygame.K_p:
 			print("Debug mode toggled")
-			if debug_mode == False:
-				debug_mode = True
-			elif debug_mode == True:
-				debug_mode = False
+			debug_mode = not debug_mode
+
+		if event.key == pygame.K_e:
+			print("Build mode enabled")
+			build_mode = True
 
 	if event.type == pygame.KEYUP:
 		if event.key == pygame.K_a or event.key == pygame.K_d:
@@ -140,11 +124,72 @@ def handle_key():
 			player.attack_flip(prevDir)
 
 
+def handle_build_keys():
+	global build_mode, light_map
+
+	currGold = player.getGold()
+
+	for event in pygame.event.get():
+		if event.type == pygame.KEYDOWN:
+
+			if event.key == pygame.K_t:
+				if currGold >= 40 and (player_x, player_y) not in towers_position_array:
+					player.setGold(currGold - 40)
+					towers_position_array.append((player_x, player_y))
+					towers.append(tower.Trap(player_x, player_y))
+					build_mode = False
+
+			if event.key == pygame.K_f:
+				if currGold >= 100 and (player_x, player_y) not in towers_position_array:
+					player.setGold(currGold - 100)
+					towers_position_array.append((player_x, player_y))
+					lights.append((player_x, player_y))
+					light_map = add_light(light_map, (player_x, player_y))
+					build_mode = False
+
+			if event.key == pygame.K_e:
+				if currGold >= 250 and (player_x, player_y) not in towers_position_array:
+					player.setGold(currGold - 250)
+					towers_position_array.append((player_x, player_y))
+					towers.append(tower.Freeze(player_x, player_y))
+					build_mode = False
+
+			if event.key == pygame.K_r:
+				if currGold >= 250 and (player_x, player_y) not in towers_position_array:
+					towers_position_array.append((player_x, player_y))
+					player.setGold(currGold - 250)
+					towers.append(tower.Turret(player_x, player_y))
+					build_mode = False
+
+			if event.key == pygame.K_d:
+				if currGold >= 500:
+					player.setGold(currGold - 500)
+					player.atk = 1.5 * player.atk
+					build_mode = False
+
+			if event.key == pygame.K_c:
+				if currGold >= 400:
+					player.setGold(currGold - 400)
+					player.speed = 1.5 * player.speed
+					build_mode = False
+
+			if event.key == pygame.K_x:
+				if currGold >= 600:
+					player.setGold(currGold - 600)
+					build_mode = False
+
+			if event.key == pygame.K_q:
+				build_mode = False
+
+# def buy_tower():
+
+
+
 def debug_mode_script():
 	if debug_mode == True:
-		player.setGold(99999)
-	elif debug_mode == False:
-		player.setGold(50)
+		player.setGold(100000)
+	# elif debug_mode == False:
+		# player.setGold(50)
 		# print("FPS: ", clock.get_fps)
 	
 
@@ -171,112 +216,121 @@ while start_screen:
 	for event in pygame.event.get():
 		if event.type == pygame.KEYDOWN:
 			start_screen = False
-	game_display.blit(images.title_screen,(0,0))
+	game_display.blit(images.title_screen, (0, 0))
 	pygame.display.update()
 
 # Main game loop
 while not player_dead:
 
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
+	if not build_mode:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				player_dead = True
+			handle_movement()
+
+		# Spawn two bad guys per second
+		frame += 1
+		if frame >= 24:
+			seconds += 1
+			frame = 0
+		if frame == 0 or frame == 12:
+			location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+			enemies.append(enemy.Zombie(location[0], location[1]))
+
+		if seconds > 0 and frame == 12 and seconds % 12 == 0:
+			for _ in range(0, int(seconds / 12)):
+				location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+				enemies.append(enemy.StrongZombie(location[0], location[1]))
+
+		if seconds > 0 and frame == 12 and ((seconds - 6) % 12 == 0):
+			for _ in range(0, int((seconds - 6) / 12)):
+				location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+				enemies.append(enemy.SpeedZombie(location[0], location[1]))
+
+		update_player_location()
+
+		# Deal damage to bad guys
+		for proj in projectiles:
+			if proj.getX() >= DISPLAY_WIDTH or proj.getX() <= 0 \
+				or proj.getY() >= DISPLAY_HEIGHT or proj.getY() <= 0:
+				projectiles.remove(proj)
+			else:
+				proj.update()
+				for badguy in enemies:
+					if abs((proj.getX()) - badguy.x ) < 20 and abs((proj.getY()) - badguy.y) < 20:
+						badguy.health -= proj.damage
+						projectiles.remove(proj)
+						if badguy.health <= 0:
+							enemies.remove(badguy)
+							score += 1
+							player.setGold(player.getGold() + 5)
+						break
+
+		# Move bad guys and deal damage to good guy
+		for badguy in enemies:
+			badguy.update(player_x, player_y)
+			if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20 and not debug_mode:
+				player.health -= badguy.damage
+
+		fx = []
+		for item in towers:
+			if item.cooldown <= 0:
+				if isinstance(item, tower.Trap):
+					item.sprite = images.trap
+					for badguy in enemies:
+						if abs(badguy.x - item.x) < 20 and abs(badguy.y - item.y) < 20:
+							enemies.remove(badguy)
+							item.sprite = images.trap_disabled
+							item.cooldown = 48
+				elif isinstance(item, tower.Freeze):
+					for badguy in enemies:
+						if abs(badguy.x - item.x) < 64 and abs(badguy.y - item.y) < 64:
+							if badguy.speed != 0:
+								fx.append((item.x - 48, item.y - 48))
+								badguy.speed = 0
+								item.cooldown = 24
+								break
+				elif isinstance(item, tower.Turret):
+					for badguy in enemies:
+						if abs(badguy.x - item.x) < 92 and abs(badguy.y - item.y) < 92:
+							if badguy.speed != 0:
+								item.cooldown = 4
+								proj = projectile.TurretShot(
+									item.x, item.y,
+									math.atan((badguy.y - item.y)/(0.0001 + badguy.x - item.x)),
+									(item.y < badguy.y), (item.x < badguy.x)
+								)
+								projectiles.append(proj)
+								break
+			else:
+				item.cooldown -= 1
+
+		draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
+		draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
+
+		debug_mode_script()
+		pygame.display.update()
+		clock.tick(24)
+
+		if player.getHealth() <= 0:
+			player.setHealth(0)
 			player_dead = True
-		handle_key()
-
-	# Spawn two bad guys per second
-	frame += 1
-	if frame >= 24:
-		seconds += 1
-		frame = 0
-	if frame == 0 or frame == 12:
-		location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-		enemies.append(enemy.Zombie(location[0], location[1]))
-
-	if seconds > 0 and frame == 12 and seconds % 12 == 0:
-		for _ in range(0, int(seconds / 12)):
-			location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-			enemies.append(enemy.StrongZombie(location[0], location[1]))
-
-	if seconds > 0 and frame == 12 and ((seconds - 6) % 12 == 0):
-		for _ in range(0, int((seconds - 6) / 12)):
-			location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-			enemies.append(enemy.SpeedZombie(location[0], location[1]))
-
-	update_player_location()
-
-	# Deal damage to bad guys
-	for proj in projectiles:
-		if proj.getX() >= DISPLAY_WIDTH or proj.getX() <= 0 \
-			or proj.getY() >= DISPLAY_HEIGHT or proj.getY() <= 0:
-			projectiles.remove(proj)
-		else:
-			proj.update()
-			for badguy in enemies:
-				if abs((proj.getX()) - badguy.x ) < 20 and abs((proj.getY()) - badguy.y) < 20:
-					badguy.health -= proj.damage
-					projectiles.remove(proj)
-					if badguy.health <= 0:
-						enemies.remove(badguy)
-						score += 1
-						player.setGold(player.getGold() + 5)
-					break
-
-	# Move bad guys and deal damage to good guy
-	for badguy in enemies:
-		badguy.update(player_x, player_y)
-		if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20 and not debug_mode:
-			player.health -= badguy.damage
-
-	fx = []
-	for item in towers:
-		if item.cooldown <= 0:
-			if isinstance(item, tower.Trap):
-				item.sprite = images.trap
-				for badguy in enemies:
-					if abs(badguy.x - item.x) < 20 and abs(badguy.y - item.y) < 20:
-						enemies.remove(badguy)
-						item.sprite = images.trap_disabled
-						item.cooldown = 48
-			elif isinstance(item, tower.Freeze):
-				for badguy in enemies:
-					if abs(badguy.x - item.x) < 64 and abs(badguy.y - item.y) < 64:
-						if badguy.speed != 0:
-							fx.append((item.x - 48, item.y - 48))
-							badguy.speed = 0
-							item.cooldown = 24
-							break
-			elif isinstance(item, tower.Turret):
-				for badguy in enemies:
-					if abs(badguy.x - item.x) < 92 and abs(badguy.y - item.y) < 92:
-						if badguy.speed != 0:
-							item.cooldown = 4
-							proj = projectile.TurretShot(
-								item.x, item.y,
-								math.atan((badguy.y - item.y)/(0.0001 + badguy.x - item.x)),
-								(item.y < badguy.y), (item.x < badguy.x)
-							)
-							projectiles.append(proj)
-							break
-		else:
-			item.cooldown -= 1
-
-	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
-	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
-
-	debug_mode_script()
-	pygame.display.update()
-	clock.tick(24)
-
-	if player.getHealth() <= 0:
-		player.setHealth(0)
-		player_dead = True
-		quitting_bool = True
-	elif player.health <= max_health:
-		player.health += constants.PLAYER_HEALTH_INCREMENT
+			quitting_bool = True
+		elif player.health <= max_health:
+			player.health += constants.PLAYER_HEALTH_INCREMENT
+	else:
+		dx = 0
+		dy = 0
+		draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
+		draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
+		game_display.blit(images.build_overlay, (0, 0))
+		pygame.display.flip()
+		handle_build_keys()
 
 while quitting_bool:
 	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
 	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
-	game_display.blit(images.death_overlay,(0,0))
+	game_display.blit(images.death_overlay, (0, 0))
 	pygame.display.flip()
 
 	for event in pygame.event.get():
