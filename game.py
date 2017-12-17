@@ -22,6 +22,7 @@ TODO LIST:
 - Sprites for character upgrades
 - Better path detection
 - Play Again option
+- Cache Tower surface, like lighting
 
 DONE LIST: 
 - Better Anti-Tower Stacking 17-Dec-17
@@ -50,6 +51,7 @@ start_screen = True
 debug_mode = False
 build_mode = False
 quitting_bool = False
+current_tower = None
 
 projectiles = []
 enemies = []
@@ -81,7 +83,7 @@ pygame.mixer.music.play(-1)
 
 
 def handle_movement():
-	global dx, prevDir, dy, debug_mode, seconds, build_mode
+	global dx, prevDir, dy, debug_mode, seconds, build_mode, current_tower
 
 	if event.type == pygame.KEYDOWN:
 		if event.key == pygame.K_a:
@@ -106,11 +108,15 @@ def handle_movement():
 			seconds *= 2
 
 		if event.key == pygame.K_p:
-			print("Debug mode toggled")
 			debug_mode = not debug_mode
 
 		if event.key == pygame.K_e:
 			build_mode = True
+			current_tower = None
+			for item in towers:
+				if abs(item.x - player.x) < 20 and abs(item.y - player.y) < 20:
+					current_tower = item
+					break
 
 	if event.type == pygame.KEYUP:
 		if event.key == pygame.K_a or event.key == pygame.K_d:
@@ -213,7 +219,6 @@ while start_screen:
 
 # Main game loop
 while not player_dead:
-
 	if not build_mode:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -312,6 +317,8 @@ while not player_dead:
 		dy = 0
 		draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
 		draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
+		if current_tower is not None:
+			draw_build_hud(game_display, basicfont, current_tower)
 		game_display.blit(images.build_overlay, (0, 0))
 		pygame.display.flip()
 		handle_build_keys()

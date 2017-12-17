@@ -14,7 +14,7 @@ def draw_hud(screen, font, height, money, health, score, frame, seconds, debug_m
 	screen.blit(healthdisplay, heathrect)
 
 	# Score
-	score_display = font.render("Score: " + str(score), True, (255,255,255))
+	score_display = font.render("Score: " + str(score), True, (255, 255, 255))
 	score_rect = score_display.get_rect()
 	score_rect.top = 10
 	score_rect.left = 1200
@@ -22,8 +22,16 @@ def draw_hud(screen, font, height, money, health, score, frame, seconds, debug_m
 
 	# Frame
 	if debug_mode:
-		frame_display = font.render("Frame: " + str(seconds) + "." + str(frame), True, (255,255,255))
+		frame_display = font.render("Frame: " + str(seconds) + "." + str(frame), True, (255, 255, 255))
 		frame_rect = score_display.get_rect()
 		frame_rect.top = height - 30
-		frame_rect.left = 1180
+		frame_rect.left = 1175
 		screen.blit(frame_display, frame_rect)
+
+
+def draw_build_hud(screen, font, tower):
+	score_display = font.render("Current Tower: ", True, (255, 255, 255))
+	score_rect = score_display.get_rect()
+	score_rect.top = 510
+	score_rect.left = 600
+	screen.blit(score_display, score_rect)
