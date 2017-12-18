@@ -1,8 +1,12 @@
 import pygame
+
+pygame.init()
+
 import baseCharacter
 import enemy
 import tower
 import images
+import sounds
 import projectile
 import math
 from board import *
@@ -34,7 +38,6 @@ DONE LIST:
 
 """
 
-pygame.init()
 pygame.font.init()
 
 # Game Dimensions
@@ -173,7 +176,9 @@ def tower_is_overlapping():
 	for item in towers:
 		if abs(item.x - player.x) < 20 and abs(item.y - player.y) < 20:
 			build_mode = True
+			sounds.fail.play()
 			return True
+	sounds.success.play()
 	return False
 
 
@@ -183,6 +188,7 @@ def buy(price):
 		player.setGold(player.gold - price)
 		build_mode = False
 		return True
+	sounds.fail.play()
 	return False
 
 

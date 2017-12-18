@@ -2,6 +2,7 @@ import pygame
 import images
 import projectile
 import constants
+import sounds
 
 
 class Character(object):
@@ -105,6 +106,7 @@ class Wizard(PlayerCharacter):
         self.sprite = images.wizard
 
     def attack(self):
+        sounds.attack.play()
         x = self.getX()
         y = self.getY()
         dirn = self.getFacing()
