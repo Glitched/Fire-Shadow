@@ -49,43 +49,46 @@ game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 pygame.display.set_caption('Fire & Shadow')
 clock = pygame.time.Clock()
 
-player_dead = False
-start_screen = True
-debug_mode = False
-build_mode = False
-quitting_bool = False
-current_tower = None
-
-projectiles = []
-enemies = []
-towers = []
-lights = [(DISPLAY_WIDTH/2, DISPLAY_HEIGHT /2)]
-light_map = generate_light_surface(DISPLAY_WIDTH, DISPLAY_HEIGHT, lights)
-
-# movement related mechanics
-player_x = DISPLAY_WIDTH / 2
-player_y = DISPLAY_HEIGHT / 2
-
-dx = 0
-dy = 0
-
-# Making player
-player = baseCharacter.Wizard(player_x, player_y, 20, constants.CHAR_SPEED, constants.WIZARD_SHOT_DAMAGE, 100, 100, 0, [])
-prevDir = constants.RIGHT
-max_health = player.health
-
-frame = 0
-seconds = 0
-
-score = 0
-
 basicfont = pygame.font.SysFont(None, 22)
 
 pygame.mixer.music.load('music.ogg')
 pygame.mixer.music.play(-1)
 
+def initialise():
+	global player_dead, start_screen, debug_mode, build_mode, quitting_bool, current_tower, projectiles, enemies, towers, lights, light_map, player_x, player_y, dx, dy
+	global player, prevDir, max_health, frame, seconds, score
+	player_dead = False
+	start_screen = True
+	debug_mode = False
+	build_mode = False
+	quitting_bool = False
+	current_tower = None
 
-def handle_movement():
+	projectiles = []
+	enemies = []
+	towers = []
+	lights = [(DISPLAY_WIDTH/2, DISPLAY_HEIGHT /2)]
+	light_map = generate_light_surface(DISPLAY_WIDTH, DISPLAY_HEIGHT, lights)
+
+	# movement related mechanics
+	player_x = DISPLAY_WIDTH / 2
+	player_y = DISPLAY_HEIGHT / 2
+
+	dx = 0
+	dy = 0
+
+	# Making player
+	player = baseCharacter.Wizard(player_x, player_y, 20, constants.CHAR_SPEED, constants.WIZARD_SHOT_DAMAGE, 100, 100, 0, [])
+	prevDir = constants.RIGHT
+	max_health = player.getHealth()
+
+	frame = 0
+	seconds = 0
+
+	score = 0
+
+
+def handle_movement(event):
 	global dx, prevDir, dy, debug_mode, seconds, build_mode, current_tower
 
 	if event.type == pygame.KEYDOWN:
@@ -215,131 +218,150 @@ def update_player_location():
 	player.setY(player_y)
 
 
+
 # Start screen loop
-while start_screen:
-	for event in pygame.event.get():
-		if event.type == pygame.KEYDOWN:
-			start_screen = False
-	game_display.blit(images.title_screen, (0, 0))
-	pygame.display.update()
+def start_loop():
+	global start_screen
+	while start_screen:
+		for event in pygame.event.get():
+			if event.type == pygame.KEYDOWN:
+				start_screen = False
+		game_display.blit(images.title_screen, (0, 0))
+		pygame.display.update()
 
 # Main game loop
-while not player_dead:
-	if not build_mode:
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
+def main_game_loop():
+	
+	global player_dead, start_screen, debug_mode, build_mode, quitting_bool, current_tower, projectiles, enemies, towers, lights, light_map, player_x, player_y, dx, dy
+	global player, prevDir, max_health, frame, seconds, score, fx
+	while not player_dead:
+		if not build_mode:
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					player_dead = True
+				handle_movement(event)
+
+			# Spawn two bad guys per second
+			frame += 1
+			if frame >= 24:
+				seconds += 1
+				frame = 0
+			if frame == 0 or frame == 12:
+				location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+				enemies.append(enemy.Zombie(location[0], location[1]))
+
+			if seconds > 0 and frame == 12 and seconds % 12 == 0:
+				for _ in range(0, int(seconds / 12)):
+					location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+					enemies.append(enemy.StrongZombie(location[0], location[1]))
+
+			if seconds > 0 and frame == 12 and ((seconds - 6) % 12 == 0):
+				for _ in range(0, int((seconds - 6) / 12)):
+					location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+					enemies.append(enemy.SpeedZombie(location[0], location[1]))
+
+			update_player_location()
+
+			# Deal damage to bad guys
+			for proj in projectiles:
+				if proj.getX() >= DISPLAY_WIDTH or proj.getX() <= 0 \
+					or proj.getY() >= DISPLAY_HEIGHT or proj.getY() <= 0:
+					projectiles.remove(proj)
+				else:
+					proj.update()
+					for badguy in enemies:
+						if abs((proj.getX()) - badguy.x ) < 20 and abs((proj.getY()) - badguy.y) < 20:
+							badguy.health -= proj.damage
+							projectiles.remove(proj)
+							if badguy.health <= 0:
+								enemies.remove(badguy)
+								score += 1
+								player.setGold(player.getGold() + 5)
+							break
+
+			# Move bad guys and deal damage to good guy
+			for badguy in enemies:
+				badguy.update(player_x, player_y)
+				if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20 and not debug_mode:
+					player.health -= badguy.damage
+
+			fx = []
+			for item in towers:
+				if item.cooldown <= 0:
+					item.cooldown = item.max_cooldown
+					if isinstance(item, tower.Trap):
+						item.sprite = images.trap
+						for badguy in enemies:
+							if abs(badguy.x - item.x) < 20 and abs(badguy.y - item.y) < 20:
+								enemies.remove(badguy)
+								item.sprite = images.trap_disabled
+								break
+					elif isinstance(item, tower.Freeze):
+						for badguy in enemies:
+							if abs(badguy.x - item.x) < 64 and abs(badguy.y - item.y) < 64 and badguy.speed != 0:
+								fx.append((item.x - 48, item.y - 48))
+								badguy.speed = 0
+								break
+					elif isinstance(item, tower.Turret):
+						for badguy in enemies:
+							if abs(badguy.x - item.x) < 92 and abs(badguy.y - item.y) < 92:
+								proj = projectile.TurretShot(
+									item.x, item.y,
+									math.atan((badguy.y - item.y)/(0.0001 + badguy.x - item.x)),
+									(item.y < badguy.y), (item.x < badguy.x)
+								)
+								projectiles.append(proj)
+								break
+				else:
+					item.cooldown -= 1
+
+			draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
+			draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
+
+			debug_mode_script()
+			pygame.display.update()
+			clock.tick(24)
+
+			if player.getHealth() <= 0:
+				player.setHealth(0)
 				player_dead = True
-			handle_movement()
+				quitting_bool = True
+			elif player.health <= max_health:
+				player.health += constants.PLAYER_HEALTH_INCREMENT
+		else:
+			dx = 0
+			dy = 0
+			draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
+			draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
+			if current_tower is not None:
+				draw_build_hud(game_display, basicfont, current_tower)
+			game_display.blit(images.build_overlay, (0, 0))
+			pygame.display.flip()
+			handle_build_keys()
 
-		# Spawn two bad guys per second
-		frame += 1
-		if frame >= 24:
-			seconds += 1
-			frame = 0
-		if frame == 0 or frame == 12:
-			location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-			enemies.append(enemy.Zombie(location[0], location[1]))
-
-		if seconds > 0 and frame == 12 and seconds % 12 == 0:
-			for _ in range(0, int(seconds / 12)):
-				location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-				enemies.append(enemy.StrongZombie(location[0], location[1]))
-
-		if seconds > 0 and frame == 12 and ((seconds - 6) % 12 == 0):
-			for _ in range(0, int((seconds - 6) / 12)):
-				location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-				enemies.append(enemy.SpeedZombie(location[0], location[1]))
-
-		update_player_location()
-
-		# Deal damage to bad guys
-		for proj in projectiles:
-			if proj.getX() >= DISPLAY_WIDTH or proj.getX() <= 0 \
-				or proj.getY() >= DISPLAY_HEIGHT or proj.getY() <= 0:
-				projectiles.remove(proj)
-			else:
-				proj.update()
-				for badguy in enemies:
-					if abs((proj.getX()) - badguy.x ) < 20 and abs((proj.getY()) - badguy.y) < 20:
-						badguy.health -= proj.damage
-						projectiles.remove(proj)
-						if badguy.health <= 0:
-							enemies.remove(badguy)
-							score += 1
-							player.setGold(player.getGold() + 5)
-						break
-
-		# Move bad guys and deal damage to good guy
-		for badguy in enemies:
-			badguy.update(player_x, player_y)
-			if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20 and not debug_mode:
-				player.health -= badguy.damage
-
-		fx = []
-		for item in towers:
-			if item.cooldown <= 0:
-				item.cooldown = item.max_cooldown
-				if isinstance(item, tower.Trap):
-					item.sprite = images.trap
-					for badguy in enemies:
-						if abs(badguy.x - item.x) < 20 and abs(badguy.y - item.y) < 20:
-							enemies.remove(badguy)
-							item.sprite = images.trap_disabled
-							break
-				elif isinstance(item, tower.Freeze):
-					for badguy in enemies:
-						if abs(badguy.x - item.x) < 64 and abs(badguy.y - item.y) < 64 and badguy.speed != 0:
-							fx.append((item.x - 48, item.y - 48))
-							badguy.speed = 0
-							break
-				elif isinstance(item, tower.Turret):
-					for badguy in enemies:
-						if abs(badguy.x - item.x) < 92 and abs(badguy.y - item.y) < 92:
-							proj = projectile.TurretShot(
-								item.x, item.y,
-								math.atan((badguy.y - item.y)/(0.0001 + badguy.x - item.x)),
-								(item.y < badguy.y), (item.x < badguy.x)
-							)
-							projectiles.append(proj)
-							break
-			else:
-				item.cooldown -= 1
-
+def quit_loop():
+	global quitting_bool, fx
+	while quitting_bool:
 		draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
 		draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
-
-		debug_mode_script()
-		pygame.display.update()
-		clock.tick(24)
-
-		if player.getHealth() <= 0:
-			player.setHealth(0)
-			player_dead = True
-			quitting_bool = True
-		elif player.health <= max_health:
-			player.health += constants.PLAYER_HEALTH_INCREMENT
-	else:
-		dx = 0
-		dy = 0
-		draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
-		draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
-		if current_tower is not None:
-			draw_build_hud(game_display, basicfont, current_tower)
-		game_display.blit(images.build_overlay, (0, 0))
+		game_display.blit(images.death_overlay, (0, 0))
 		pygame.display.flip()
-		handle_build_keys()
 
-while quitting_bool:
-	draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
-	draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
-	game_display.blit(images.death_overlay, (0, 0))
-	pygame.display.flip()
+		for event in pygame.event.get():
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_q:
+					quitting_bool = False
+				if event.key == pygame.K_a:
+					play_game()
 
-	for event in pygame.event.get():
-		if event.type == pygame.KEYDOWN:
-			if event.key == pygame.K_q:
-				quitting_bool = False
+def play_game():
 
+	initialise()
+	start_loop()
+	main_game_loop()
+	quit_loop()
+
+play_game()
 print(score)
 pygame.quit()
 quit()
