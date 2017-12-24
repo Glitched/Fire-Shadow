@@ -25,7 +25,7 @@ TODO LIST:
 - Per Tower Upgrades
 - Sprites for character upgrades
 - Better path detection
-- Play Again option
+
 - Cache Tower surface, like lighting
 
 DONE LIST: 
@@ -35,6 +35,7 @@ DONE LIST:
 - Implement a start screen (nothing fancy yet necessarily, but something functional) DONE 01-Dec-17
 - Implement a dying screen
 - Find a new font (Check google fonts) DONE 01-Dec-17
+- Play Again option DONE 23-Dec-17
 
 """
 
