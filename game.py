@@ -28,6 +28,13 @@ TODO LIST:
 - Cache Tower surface, like lighting
 - Upgrade the wave system, i.e. tweaking numbers and spawning algorithms
 - MASSIVE cleanup: no more magic numbers, absurdly long functions, and functions without somewhat detailed specs so we know what we're doing
+- NOTES FROM GAMEPLAY: Need to cap the "Upgrade speed". If you keep going like twice or thrice the game becomes unplayable. Also need to figure out HP + DMG scaling.
+
+IDEAS LIST:
+
+- The game is currently too easy: perhaps more enemy variety/ boss waves (i.e. every 5 or so)
+- On the same vein, probably need to weaken towers a decent bit, playing this game I had no difficulty getting to wave 14 just sitting in towers, 
+and it got boring quickly.
 
 DONE LIST: 
 - Better Anti-Tower Stacking 17-Dec-17
