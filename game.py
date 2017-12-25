@@ -9,6 +9,7 @@ import images
 import sounds
 import projectile
 import math
+import wave
 from board import *
 from HUD import *
 
@@ -20,13 +21,13 @@ TODO LIST:
 - GUI rework
 - Actual pathfinding algorithms
 - Upgrade systems
-- Wave systems
 - Hearts instead of health number (Ten hearts, divisible in half)
 - Per Tower Upgrades
 - Sprites for character upgrades
 - Better path detection
-
 - Cache Tower surface, like lighting
+- Upgrade the wave system, i.e. tweaking numbers and spawning algorithms
+- MASSIVE cleanup: no more magic numbers, absurdly long functions, and functions without somewhat detailed specs so we know what we're doing
 
 DONE LIST: 
 - Better Anti-Tower Stacking 17-Dec-17
@@ -36,6 +37,7 @@ DONE LIST:
 - Implement a dying screen
 - Find a new font (Check google fonts) DONE 01-Dec-17
 - Play Again option DONE 23-Dec-17
+- Wave System DONE 25-Dec-17
 
 """
 
@@ -57,13 +59,21 @@ pygame.mixer.music.play(-1)
 
 def initialise():
 	global player_dead, start_screen, debug_mode, build_mode, quitting_bool, current_tower, projectiles, enemies, towers, lights, light_map, player_x, player_y, dx, dy
-	global player, prevDir, max_health, frame, seconds, score
+	global player, prevDir, max_health, frame, seconds, score, current_wave
 	player_dead = False
 	start_screen = True
 	debug_mode = False
 	build_mode = False
 	quitting_bool = False
 	current_tower = None
+
+	curr_enemies = []
+	for n in range(constants.BASE_WAVE_AMOUNT):
+		location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+		curr_enemies.append(enemy.Zombie(location[0], location[1]))
+
+	current_wave = wave.Wave(1, curr_enemies)
+
 
 	projectiles = []
 	enemies = []
@@ -218,6 +228,25 @@ def update_player_location():
 	player.setX(player_x)
 	player.setY(player_y)
 
+def initNewWave(currWave):
+	num_fast_per_wave = 2
+	num_big_per_wave = 2 #THESE ARE TEMPORARY NUMBERS, WE CAN COME UP WITH A GOOD AMOUNT AND SCALING LATER, AS WELL AS AN ASSIGNMENT
+
+	enem = []
+	level = currWave.getLevel() + 1
+
+	for n in range(int(currWave.getNumEnemies()*1.25)):
+		location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+		if n == 0 or n == 1:
+			enem.append(enemy.SpeedZombie(location[0], location[1]))
+		elif n == 2 or n == 3:
+			enem.append(enemy.StrongZombie(location[0],location[1]))
+		else:
+			enem.append(enemy.Zombie(location[0],location[1]))
+
+	newWave = wave.Wave(level, enem)
+	
+	return newWave
 
 
 # Start screen loop
@@ -234,7 +263,7 @@ def start_loop():
 def main_game_loop():
 	
 	global player_dead, start_screen, debug_mode, build_mode, quitting_bool, current_tower, projectiles, enemies, towers, lights, light_map, player_x, player_y, dx, dy
-	global player, prevDir, max_health, frame, seconds, score, fx
+	global player, prevDir, max_health, frame, seconds, score, fx, current_wave
 	while not player_dead:
 		if not build_mode:
 			for event in pygame.event.get():
@@ -242,24 +271,27 @@ def main_game_loop():
 					player_dead = True
 				handle_movement(event)
 
-			# Spawn two bad guys per second
 			frame += 1
 			if frame >= 24:
 				seconds += 1
 				frame = 0
-			if frame == 0 or frame == 12:
-				location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-				enemies.append(enemy.Zombie(location[0], location[1]))
+			
+			# Spawning - including wave mechanics
 
-			if seconds > 0 and frame == 12 and seconds % 12 == 0:
-				for _ in range(0, int(seconds / 12)):
-					location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-					enemies.append(enemy.StrongZombie(location[0], location[1]))
+			if len(current_wave.getEnemies()) > 0:	
+				if frame == 0 or frame == 12:
+					enemies.append(current_wave.getEnemies().pop())
+			
 
-			if seconds > 0 and frame == 12 and ((seconds - 6) % 12 == 0):
-				for _ in range(0, int((seconds - 6) / 12)):
-					location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-					enemies.append(enemy.SpeedZombie(location[0], location[1]))
+			elif len(current_wave.getEnemies()) <= 0 and len(enemies) == 0: #enemies have run out
+				current_wave.setGap(current_wave.getGap()-(1/60))
+
+
+				if current_wave.getGap() <= 0:
+					current_wave = initNewWave(current_wave)
+
+
+
 
 			update_player_location()
 
@@ -318,6 +350,9 @@ def main_game_loop():
 
 			draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
 			draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
+			draw_wave_number(game_display, basicfont, DISPLAY_HEIGHT, DISPLAY_WIDTH, current_wave.getLevel())
+			if len(enemies) == 0:
+				draw_incoming_wave(game_display, basicfont, DISPLAY_HEIGHT, DISPLAY_WIDTH, current_wave.getLevel())
 
 			debug_mode_script()
 			pygame.display.update()

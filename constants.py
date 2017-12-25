@@ -14,3 +14,7 @@ WIZARD_SHOT_DAMAGE = 2
 # Player Constants
 PLAYER_BASE_HEALTH = 20
 PLAYER_HEALTH_INCREMENT = 0.05
+
+#Wave constants
+BASE_WAVE_AMOUNT = 10
+WAVE_GAP = 3 #This number is in seconds
