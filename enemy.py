@@ -21,7 +21,7 @@ def random_spawn_location(width, height):
 
 class Enemy(object):
 
-	def __init__(self, sprite, speed, damage, health, x, y):
+	def __init__(self, sprite, speed, damage, health, x, y, value):
 
 		self.sprite = sprite
 		self.speed = speed
@@ -29,6 +29,7 @@ class Enemy(object):
 		self.health = health
 		self.x = x
 		self.y = y
+		self.value = value
 
 	def setHealth(self, arg):
 		self.health = arg
@@ -41,6 +42,12 @@ class Enemy(object):
 
 	def getDamage(self):
 		return self.damage
+
+	def getValue(self):
+		return self.value
+
+	def setValue(self, val):
+		self.value = val
 
 	def update(self, playerX, playerY):
 		for i in range(0, self.speed):
@@ -58,16 +65,16 @@ class Enemy(object):
 class Zombie(Enemy):
 
 	def __init__(self, x, y):
-		super().__init__(images.zombie, 2, 1, 5, x, y)
+		super().__init__(images.zombie, 2, 1, 5, x, y, 5)
 
 
 class StrongZombie(Enemy):
 
 	def __init__(self, x, y):
-		super().__init__(images.zombie_strong, 1, 2, 12, x, y)
+		super().__init__(images.zombie_strong, 1, 2, 12, x, y, 10)
 
 
 class SpeedZombie(Enemy):
 
 	def __init__(self, x, y):
-		super().__init__(images.zombie_speed, 4, 1, 5, x, y)
+		super().__init__(images.zombie_speed, 4, 1, 5, x, y, 10)

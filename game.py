@@ -242,7 +242,7 @@ def initNewWave(currWave):
 	enem = []
 	level = currWave.getLevel() + 1
 
-	for n in range(int(currWave.getNumEnemies()*1.25)):
+	for n in range(int(currWave.getNumEnemies()*constants.WAVE_SCALING)):
 		location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
 		if n == 0 or n == 1:
 			enem.append(enemy.SpeedZombie(location[0], location[1]))
@@ -250,6 +250,9 @@ def initNewWave(currWave):
 			enem.append(enemy.StrongZombie(location[0],location[1]))
 		else:
 			enem.append(enemy.Zombie(location[0],location[1]))
+
+	for badguy in enem:
+		badguy.setDamage(badguy.getDamage()*level/3)
 
 	newWave = wave.Wave(level, enem)
 	
@@ -316,7 +319,7 @@ def main_game_loop():
 							if badguy.health <= 0:
 								enemies.remove(badguy)
 								score += 1
-								player.setGold(player.getGold() + 5)
+								player.setGold(player.getGold() + badguy.getValue())
 							break
 
 			# Move bad guys and deal damage to good guy

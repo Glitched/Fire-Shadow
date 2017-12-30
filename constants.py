@@ -18,3 +18,4 @@ PLAYER_HEALTH_INCREMENT = 0.05
 #Wave constants
 BASE_WAVE_AMOUNT = 10
 WAVE_GAP = 3 #This number is in seconds
+WAVE_SCALING = 1.5
