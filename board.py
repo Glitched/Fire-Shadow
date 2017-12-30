@@ -4,13 +4,12 @@ import animation
 import pygame
 
 
-def draw_board(screen, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode):
-
+def draw_board(screen, player, instance, light_map, fx, debug_mode):
 	screen.blit(images.board_background, (0, 0))
-	place_towers(towers, screen)
+	place_towers(instance.towers, screen)
 	draw_fx(fx, screen)
-	draw_projectiles(projectiles, screen)
-	place_objects(screen, enemies, lights)
+	draw_projectiles(instance.projectiles, screen)
+	place_objects(screen, instance.enemies, instance.lights)
 
 	# Draw lighting
 	if not debug_mode:

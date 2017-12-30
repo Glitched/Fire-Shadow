@@ -1,16 +1,16 @@
 import constants
 
 
-def draw_hud(screen, font, money, health, score, frame, seconds, debug_mode):
+def draw_hud(screen, font, player, score, frame, seconds, debug_mode):
 	# Money
-	text = font.render("Gold: " + str(money), True, (255, 255, 255))
+	text = font.render("Gold: " + str(player.gold), True, (255, 255, 255))
 	textrect = text.get_rect()
 	textrect.top = 10
 	textrect.left = 10
 	screen.blit(text, textrect)
 
 	# Health
-	healthdisplay = font.render("Health: " + str(round(health)), True, (255, 255, 255))
+	healthdisplay = font.render("Health: " + str(round(player.health)), True, (255, 255, 255))
 	heathrect = text.get_rect()
 	heathrect.top = constants.DISPLAY_HEIGHT - 30
 	heathrect.left = 10

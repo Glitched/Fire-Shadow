@@ -11,9 +11,12 @@ class Character(object):
         self.x = x
         self.y = y
         self.health = max_health
+        self.max_health = max_health
         self.facing = constants.RIGHT
         self.atk = atk
         self.speed = speed
+        self.dx = 0
+        self.dy = 0
 
     def getX(self):
         return self.x
