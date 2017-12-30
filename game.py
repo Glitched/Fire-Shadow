@@ -55,7 +55,7 @@ DISPLAY_WIDTH = 1280
 DISPLAY_HEIGHT = 704
 
 # initialisation of components
-game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
+game_display = pygame.display.set_mode((constants.DISPLAY_WIDTH, constants.DISPLAY_HEIGHT))
 pygame.display.set_caption('Fire & Shadow')
 clock = pygame.time.Clock()
 
@@ -65,7 +65,7 @@ pygame.mixer.music.load('music.ogg')
 pygame.mixer.music.play(-1)
 
 def initialise():
-	global player_dead, start_screen, debug_mode, build_mode, quitting_bool, current_tower, projectiles, enemies, towers, lights, light_map, player_x, player_y, dx, dy
+	global player_dead, start_screen, debug_mode, build_mode, quitting_bool, current_tower, projectiles, enemies, towers, lights, light_map, dx, dy
 	global player, prevDir, max_health, frame, seconds, score, current_wave
 	player_dead = False
 	start_screen = True
@@ -76,27 +76,34 @@ def initialise():
 
 	curr_enemies = []
 	for n in range(constants.BASE_WAVE_AMOUNT):
-		location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+		location = enemy.random_spawn_location(constants.DISPLAY_WIDTH, constants.DISPLAY_HEIGHT)
 		curr_enemies.append(enemy.Zombie(location[0], location[1]))
 
 	current_wave = wave.Wave(1, curr_enemies)
 
-
 	projectiles = []
 	enemies = []
 	towers = []
-	lights = [(DISPLAY_WIDTH/2, DISPLAY_HEIGHT /2)]
-	light_map = generate_light_surface(DISPLAY_WIDTH, DISPLAY_HEIGHT, lights)
+	lights = [(constants.DISPLAY_WIDTH/2, constants.DISPLAY_HEIGHT /2)]
+	light_map = generate_light_surface(lights)
 
 	# movement related mechanics
-	player_x = DISPLAY_WIDTH / 2
-	player_y = DISPLAY_HEIGHT / 2
-
 	dx = 0
 	dy = 0
 
 	# Making player
-	player = baseCharacter.Wizard(player_x, player_y, 20, constants.CHAR_SPEED, constants.WIZARD_SHOT_DAMAGE, 100, 100, 0, [])
+	player = baseCharacter.Wizard(
+		constants.DISPLAY_WIDTH / 2,
+		constants.DISPLAY_HEIGHT / 2,
+		20,
+		constants.CHAR_SPEED,
+		constants.WIZARD_SHOT_DAMAGE,
+		100,
+		100,
+		0,
+		[]
+	)
+
 	prevDir = constants.RIGHT
 	max_health = player.getHealth()
 
@@ -162,20 +169,20 @@ def handle_build_keys():
 
 			if event.key == pygame.K_t:
 				if buy(40) and not tower_is_overlapping():
-					towers.append(tower.Trap(player_x, player_y))
+					towers.append(tower.Trap(player.x, player.y))
 
 			if event.key == pygame.K_g:
 				if buy(100) and not tower_is_overlapping():
-					lights.append((player_x, player_y))
-					light_map = add_light(light_map, (player_x, player_y))
+					lights.append((player.x, player.y))
+					light_map = add_light(light_map, (player.x, player.y))
 
 			if event.key == pygame.K_f:
 				if buy(250) and not tower_is_overlapping():
-					towers.append(tower.Freeze(player_x, player_y))
+					towers.append(tower.Freeze(player.x, player.y))
 
 			if event.key == pygame.K_r:
 				if buy(250) and not tower_is_overlapping():
-					towers.append(tower.Turret(player_x, player_y))
+					towers.append(tower.Turret(player.x, player.y))
 
 			if event.key == pygame.K_d:
 				if buy(400):
@@ -218,17 +225,16 @@ def debug_mode_script():
 		player.setGold(100000)
 	
 
-def update_player_location():
-	global player_x, player_y
+def update_player_location(player_x, player_y):
 	player_x += dx
 	player_y += dy
 
-	if player_x >= DISPLAY_WIDTH - constants.TILE_SIZE:
-		player_x = DISPLAY_WIDTH - constants.TILE_SIZE
+	if player_x >= constants.DISPLAY_WIDTH - constants.TILE_SIZE:
+		player_x = constants.DISPLAY_WIDTH - constants.TILE_SIZE
 	if player_x <= 0:
 		player_x = 0
-	if player_y >= DISPLAY_HEIGHT - constants.TILE_SIZE:
-		player_y = DISPLAY_HEIGHT- constants.TILE_SIZE
+	if player_y >= constants.DISPLAY_HEIGHT - constants.TILE_SIZE:
+		player_y = constants.DISPLAY_HEIGHT- constants.TILE_SIZE
 	if player_y <= 0:
 		player_y = 0
 
@@ -237,13 +243,13 @@ def update_player_location():
 
 def initNewWave(currWave):
 	num_fast_per_wave = 2
-	num_big_per_wave = 2 #THESE ARE TEMPORARY NUMBERS, WE CAN COME UP WITH A GOOD AMOUNT AND SCALING LATER, AS WELL AS AN ASSIGNMENT
+	num_big_per_wave = 2  # THESE ARE TEMPORARY NUMBERS, WE CAN COME UP WITH A GOOD AMOUNT AND SCALING LATER, AS WELL AS AN ASSIGNMENT
 
 	enem = []
 	level = currWave.getLevel() + 1
 
 	for n in range(int(currWave.getNumEnemies()*constants.WAVE_SCALING)):
-		location = enemy.random_spawn_location(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+		location = enemy.random_spawn_location(constants.DISPLAY_WIDTH, constants.DISPLAY_HEIGHT)
 		if n == 0 or n == 1:
 			enem.append(enemy.SpeedZombie(location[0], location[1]))
 		elif n == 2 or n == 3:
@@ -269,10 +275,10 @@ def start_loop():
 		game_display.blit(images.title_screen, (0, 0))
 		pygame.display.update()
 
+
 # Main game loop
 def main_game_loop():
-	
-	global player_dead, start_screen, debug_mode, build_mode, quitting_bool, current_tower, projectiles, enemies, towers, lights, light_map, player_x, player_y, dx, dy
+	global player_dead, start_screen, debug_mode, build_mode, quitting_bool, current_tower, projectiles, enemies, towers, lights, light_map, dx, dy
 	global player, prevDir, max_health, frame, seconds, score, fx, current_wave
 	while not player_dead:
 		if not build_mode:
@@ -291,24 +297,19 @@ def main_game_loop():
 			if len(current_wave.getEnemies()) > 0:	
 				if frame == 0 or frame == 12:
 					enemies.append(current_wave.getEnemies().pop())
-			
 
-			elif len(current_wave.getEnemies()) <= 0 and len(enemies) == 0: #enemies have run out
+			elif len(current_wave.getEnemies()) <= 0 and len(enemies) == 0:
 				current_wave.setGap(current_wave.getGap()-(1/60))
-
 
 				if current_wave.getGap() <= 0:
 					current_wave = initNewWave(current_wave)
 
-
-
-
-			update_player_location()
+			update_player_location(player.x, player.y)
 
 			# Deal damage to bad guys
 			for proj in projectiles:
-				if proj.getX() >= DISPLAY_WIDTH or proj.getX() <= 0 \
-					or proj.getY() >= DISPLAY_HEIGHT or proj.getY() <= 0:
+				if proj.getX() >= constants.DISPLAY_WIDTH or proj.getX() <= 0 \
+					or proj.getY() >= constants.DISPLAY_HEIGHT or proj.getY() <= 0:
 					projectiles.remove(proj)
 				else:
 					proj.update()
@@ -324,7 +325,7 @@ def main_game_loop():
 
 			# Move bad guys and deal damage to good guy
 			for badguy in enemies:
-				badguy.update(player_x, player_y)
+				badguy.update(player.x, player.y)
 				if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20 and not debug_mode:
 					player.health -= badguy.damage
 
@@ -358,11 +359,11 @@ def main_game_loop():
 				else:
 					item.cooldown -= 1
 
-			draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
-			draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
-			draw_wave_number(game_display, basicfont, DISPLAY_HEIGHT, DISPLAY_WIDTH, current_wave.getLevel())
+			draw_board(game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
+			draw_hud(game_display, basicfont, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
+			draw_wave_number(game_display, basicfont, constants.DISPLAY_HEIGHT, constants.DISPLAY_WIDTH, current_wave.getLevel())
 			if len(enemies) == 0:
-				draw_incoming_wave(game_display, basicfont, DISPLAY_HEIGHT, DISPLAY_WIDTH, current_wave.getLevel())
+				draw_incoming_wave(game_display, basicfont, current_wave.getLevel())
 
 			debug_mode_script()
 			pygame.display.update()
@@ -377,19 +378,20 @@ def main_game_loop():
 		else:
 			dx = 0
 			dy = 0
-			draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
-			draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
+			draw_board(game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
+			draw_hud(game_display, basicfont, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
 			if current_tower is not None:
 				draw_build_hud(game_display, basicfont, current_tower)
 			game_display.blit(images.build_overlay, (0, 0))
 			pygame.display.flip()
 			handle_build_keys()
 
+
 def quit_loop():
 	global quitting_bool, fx
 	while quitting_bool:
-		draw_board(DISPLAY_WIDTH, DISPLAY_HEIGHT, game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
-		draw_hud(game_display, basicfont, DISPLAY_HEIGHT, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
+		draw_board(game_display, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode)
+		draw_hud(game_display, basicfont, player.getGold(), player.getHealth(), score, frame, seconds, debug_mode)
 		game_display.blit(images.death_overlay, (0, 0))
 		pygame.display.flip()
 
@@ -399,6 +401,7 @@ def quit_loop():
 					quitting_bool = False
 				if event.key == pygame.K_a:
 					play_game()
+
 
 def play_game():
 

@@ -15,7 +15,11 @@ WIZARD_SHOT_DAMAGE = 2
 PLAYER_BASE_HEALTH = 20
 PLAYER_HEALTH_INCREMENT = 0.05
 
-#Wave constants
+# Wave constants
 BASE_WAVE_AMOUNT = 10
-WAVE_GAP = 3 #This number is in seconds
+WAVE_GAP = 3  # This number is in seconds
 WAVE_SCALING = 1.5
+
+# Game Dimensions
+DISPLAY_WIDTH = 1280
+DISPLAY_HEIGHT = 704

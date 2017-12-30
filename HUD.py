@@ -1,4 +1,7 @@
-def draw_hud(screen, font, height, money, health, score, frame, seconds, debug_mode):
+import constants
+
+
+def draw_hud(screen, font, money, health, score, frame, seconds, debug_mode):
 	# Money
 	text = font.render("Gold: " + str(money), True, (255, 255, 255))
 	textrect = text.get_rect()
@@ -9,7 +12,7 @@ def draw_hud(screen, font, height, money, health, score, frame, seconds, debug_m
 	# Health
 	healthdisplay = font.render("Health: " + str(round(health)), True, (255, 255, 255))
 	heathrect = text.get_rect()
-	heathrect.top = height - 30
+	heathrect.top = constants.DISPLAY_HEIGHT - 30
 	heathrect.left = 10
 	screen.blit(healthdisplay, heathrect)
 
@@ -24,9 +27,10 @@ def draw_hud(screen, font, height, money, health, score, frame, seconds, debug_m
 	if debug_mode:
 		frame_display = font.render("Frame: " + str(seconds) + "." + str(frame), True, (255, 255, 255))
 		frame_rect = score_display.get_rect()
-		frame_rect.top = height - 30
+		frame_rect.top = constants.DISPLAY_HEIGHT - 30
 		frame_rect.left = 1175
 		screen.blit(frame_display, frame_rect)
+
 
 def draw_wave_number(screen, font, height, width, wave_num):
 	text = font.render("Wave: " + str(wave_num), True, (255,255,255))
@@ -35,12 +39,14 @@ def draw_wave_number(screen, font, height, width, wave_num):
 	rect.left = width/2
 	screen.blit(text, rect)
 
-def draw_incoming_wave(screen, font, height, width, wave_num):
-	text = font.render("Wave " + str(wave_num) + " over. Prepare for wave " + str(wave_num + 1) + ".", True, (255,0,0))
+
+def draw_incoming_wave(screen, font, wave_num):
+	text = font.render("Wave " + str(wave_num) + " over. Prepare for wave " + str(wave_num + 1) + ".", True, (255, 0, 0))
 	rect = text.get_rect()
 	rect.top = 45
-	rect.left = width/2 - 90
+	rect.left = constants.DISPLAY_WIDTH/2 - 90
 	screen.blit(text, rect)
+
 
 def draw_build_hud(screen, font, tower):
 	score_display = font.render("Current Tower: ", True, (255, 255, 255))
