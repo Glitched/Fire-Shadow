@@ -8,6 +8,8 @@ class Game(object):
         self.enemies = []
         self.towers = []
         self.lights = [(constants.DISPLAY_WIDTH / 2, constants.DISPLAY_HEIGHT / 2)]
+        self.light_map = None
+
         self.prevDir = constants.RIGHT
 
         self.frame = 0
@@ -19,3 +21,5 @@ class Game(object):
         self.build_mode = False
 
         self.current_tower = None
+
+        self.current_wave = None

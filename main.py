@@ -62,16 +62,15 @@ pygame.mixer.music.play(-1)
 
 
 def initialise():
-	global current_wave, light_map
-
 	curr_enemies = []
 	for n in range(constants.BASE_WAVE_AMOUNT):
 		location = enemy.random_spawn_location(constants.DISPLAY_WIDTH, constants.DISPLAY_HEIGHT)
 		curr_enemies.append(enemy.Zombie(location[0], location[1]))
 
-	current_wave = wave.Wave(1, curr_enemies)
 	instance = game.Game()
-	light_map = generate_light_surface(instance.lights)
+	instance.light_map = generate_light_surface(instance.lights)
+	instance.current_wave = wave.Wave(1, curr_enemies)
+
 
 	# Making player
 	player = baseCharacter.Wizard(
@@ -134,8 +133,6 @@ def handle_movement(event, player, instance):
 
 
 def handle_build_keys(player, instance):
-	global light_map
-
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			player.health = 0
@@ -148,7 +145,7 @@ def handle_build_keys(player, instance):
 			if event.key == pygame.K_g:
 				if buy(player, instance, 100) and not tower_is_overlapping(player, instance):
 					instance.lights.append((player.x, player.y))
-					light_map = add_light(light_map, (player.x, player.y))
+					instance.light_map = add_light(instance.light_map, (player.x, player.y))
 
 			if event.key == pygame.K_f:
 				if buy(player, instance, 250) and not tower_is_overlapping(player, instance):
@@ -246,7 +243,6 @@ def start_loop():
 
 # Main game loop
 def main_game_loop(player, instance):
-	global light_map, fx, current_wave
 	while player.health > 0:
 		if not instance.build_mode:
 			for event in pygame.event.get():
@@ -262,15 +258,15 @@ def main_game_loop(player, instance):
 			
 			# Spawning - including wave mechanics
 
-			if len(current_wave.getEnemies()) > 0:	
+			if len(instance.current_wave.getEnemies()) > 0:
 				if instance.frame % 12 == 0:
-					instance.enemies.append(current_wave.getEnemies().pop())
+					instance.enemies.append(instance.current_wave.getEnemies().pop())
 
-			elif len(current_wave.getEnemies()) <= 0 and len(instance.enemies) == 0:
-				current_wave.setGap(current_wave.getGap()-(1/60))
+			elif len(instance.current_wave.getEnemies()) <= 0 and len(instance.enemies) == 0:
+				instance.current_wave.setGap(instance.current_wave.getGap()-(1/60))
 
-				if current_wave.getGap() <= 0:
-					current_wave = init_new_wave(current_wave)
+				if instance.current_wave.getGap() <= 0:
+					instance.current_wave = init_new_wave(instance.current_wave)
 
 			update_player_location(player)
 
@@ -327,11 +323,11 @@ def main_game_loop(player, instance):
 				else:
 					item.cooldown -= 1
 
-			draw_board(game_display, player, instance, light_map, fx)
+			draw_board(game_display, player, instance, fx)
 			draw_hud(game_display, basicfont, player, instance)
-			draw_wave_number(game_display, basicfont, current_wave.getLevel())
+			draw_wave_number(game_display, basicfont, instance.current_wave.getLevel())
 			if len(instance.enemies) == 0:
-				draw_incoming_wave(game_display, basicfont, current_wave.getLevel())
+				draw_incoming_wave(game_display, basicfont, instance.current_wave.getLevel())
 
 			if instance.debug_mode:
 				player.gold = 31337
@@ -346,7 +342,7 @@ def main_game_loop(player, instance):
 		else:
 			player.dx = 0
 			player.dy = 0
-			draw_board(game_display, player, instance, light_map, fx)
+			draw_board(game_display, player, instance, None)
 			draw_hud(game_display, basicfont, player, instance)
 			if instance.current_tower is not None:
 				draw_build_hud(game_display, basicfont, instance.current_tower)
