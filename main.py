@@ -77,7 +77,7 @@ def initialise():
 	player = baseCharacter.Wizard(
 		constants.DISPLAY_WIDTH / 2,
 		constants.DISPLAY_HEIGHT / 2,
-		20,
+		constants.WIZARD_BASE_HEALTH,
 		constants.CHAR_SPEED,
 		constants.WIZARD_SHOT_DAMAGE,
 		100,
