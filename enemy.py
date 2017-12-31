@@ -1,5 +1,6 @@
 import images
 import random
+import constants
 
 
 def random_spawn_location(width, height):
@@ -65,16 +66,19 @@ class Enemy(object):
 class Zombie(Enemy):
 
 	def __init__(self, x, y):
-		super().__init__(images.zombie, 2, 1, 5, x, y, 5)
+		super().__init__(images.zombie, constants.ZOMBIE_SPEED, constants.ZOMBIE_DAMAGE, constants.ZOMBIE_HEALTH,
+		x, y, constants.ZOMBIE_VALUE)
 
 
 class StrongZombie(Enemy):
 
 	def __init__(self, x, y):
-		super().__init__(images.zombie_strong, 1, 2, 12, x, y, 10)
+		super().__init__(images.zombie_strong, constants.STRONG_ZOMBIE_SPEED, constants.STRONG_ZOMBIE_DAMAGE, constants.STRONG_ZOMBIE_HEALTH,
+		x, y, constants.STRONG_ZOMBIE_VALUE)
 
 
 class SpeedZombie(Enemy):
 
 	def __init__(self, x, y):
-		super().__init__(images.zombie_speed, 4, 1, 5, x, y, 10)
+		super().__init__(images.zombie_speed, constants.SPEED_ZOMBIE_SPEED, constants.SPEED_ZOMBIE_DAMAGE, constants.SPEED_ZOMBIE_HEALTH, 
+		x, y, constants.SPEED_ZOMBIE_VALUE)
