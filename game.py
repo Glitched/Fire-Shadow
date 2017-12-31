@@ -15,3 +15,7 @@ class Game(object):
 
         self.score = 0
 
+        self.debug_mode = False
+        self.build_mode = False
+
+        self.current_tower = None

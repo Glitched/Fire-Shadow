@@ -4,7 +4,7 @@ import animation
 import pygame
 
 
-def draw_board(screen, player, instance, light_map, fx, debug_mode):
+def draw_board(screen, player, instance, light_map, fx):
 	screen.blit(images.board_background, (0, 0))
 	place_towers(instance.towers, screen)
 	draw_fx(fx, screen)
@@ -12,7 +12,7 @@ def draw_board(screen, player, instance, light_map, fx, debug_mode):
 	place_objects(screen, instance.enemies, instance.lights)
 
 	# Draw lighting
-	if not debug_mode:
+	if not instance.debug_mode:
 		screen.blit(light_map, (0, 0), special_flags=pygame.BLEND_RGBA_SUB)
 
 	# Place player

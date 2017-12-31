@@ -1,7 +1,7 @@
 import constants
 
 
-def draw_hud(screen, font, player, instance, debug_mode):
+def draw_hud(screen, font, player, instance):
 	# Money
 	text = font.render("Gold: " + str(player.gold), True, (255, 255, 255))
 	textrect = text.get_rect()
@@ -24,7 +24,7 @@ def draw_hud(screen, font, player, instance, debug_mode):
 	screen.blit(score_display, score_rect)
 
 	# Frame
-	if debug_mode:
+	if instance.debug_mode:
 		frame_display = font.render("Frame: " + str(instance.seconds) + "." + str(instance.frame), True, (255, 255, 255))
 		frame_rect = score_display.get_rect()
 		frame_rect.top = constants.DISPLAY_HEIGHT - 30

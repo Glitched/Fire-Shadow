@@ -62,12 +62,7 @@ pygame.mixer.music.play(-1)
 
 
 def initialise():
-	global player_dead, debug_mode, build_mode, current_tower, light_map
-	global player, frame, seconds, current_wave, instance
-	player_dead = False
-	debug_mode = False
-	build_mode = False
-	current_tower = None
+	global current_wave, light_map
 
 	curr_enemies = []
 	for n in range(constants.BASE_WAVE_AMOUNT):
@@ -91,10 +86,10 @@ def initialise():
 		[]
 	)
 
+	return player, instance
 
-def handle_movement(event):
-	global debug_mode, build_mode, current_tower, instance
 
+def handle_movement(event, player, instance):
 	if event.type == pygame.KEYDOWN:
 		if event.key == pygame.K_a:
 			player.dx = -player.speed
@@ -114,18 +109,18 @@ def handle_movement(event):
 		if event.key == pygame.K_SPACE:
 			instance.projectiles.append(player.attack())
 
-		if event.key == pygame.K_o and debug_mode:
-			seconds *= 2
+		if event.key == pygame.K_o and instance.debug_mode:
+			instance.seconds *= 2
 
 		if event.key == pygame.K_p:
-			debug_mode = not debug_mode
+			instance.debug_mode = not instance.debug_mode
 
 		if event.key == pygame.K_e:
-			build_mode = True
-			current_tower = None
+			instance.build_mode = True
+			instance.current_tower = None
 			for item in instance.towers:
 				if abs(item.x - player.x) < 20 and abs(item.y - player.y) < 20:
-					current_tower = item
+					instance.current_tower = item
 					break
 
 	if event.type == pygame.KEYUP:
@@ -138,82 +133,75 @@ def handle_movement(event):
 			player.attack_flip(instance.prevDir)
 
 
-def handle_build_keys():
-	global build_mode, light_map, player_dead
+def handle_build_keys(player, instance):
+	global light_map
 
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
-			player_dead = True
+			player.health = 0
 		if event.type == pygame.KEYDOWN:
 
 			if event.key == pygame.K_t:
-				if buy(40) and not tower_is_overlapping():
+				if buy(player, instance, 40) and not tower_is_overlapping(player, instance):
 					instance.towers.append(tower.Trap(player.x, player.y))
 
 			if event.key == pygame.K_g:
-				if buy(100) and not tower_is_overlapping():
+				if buy(player, instance, 100) and not tower_is_overlapping(player, instance):
 					instance.lights.append((player.x, player.y))
 					light_map = add_light(light_map, (player.x, player.y))
 
 			if event.key == pygame.K_f:
-				if buy(250) and not tower_is_overlapping():
+				if buy(player, instance, 250) and not tower_is_overlapping(player, instance):
 					instance.towers.append(tower.Freeze(player.x, player.y))
 
 			if event.key == pygame.K_r:
-				if buy(250) and not tower_is_overlapping():
+				if buy(player, instance, 250) and not tower_is_overlapping(player, instance):
 					instance.towers.append(tower.Turret(player.x, player.y))
 
 			if event.key == pygame.K_d:
-				if buy(400):
+				if buy(player, instance, 400):
 					player.atk = 1.5 * player.atk
 
 			if event.key == pygame.K_c:
-				if buy(400):
+				if buy(player, instance, 400):
 					player.speed = 1.5 * player.speed
 
 			if event.key == pygame.K_x:
-				buy(600)
+				buy(player, instance, 600)
 
 			if event.key == pygame.K_e:
-				build_mode = False
+				instance.build_mode = False
 
 
-def tower_is_overlapping():
-	global build_mode
+def tower_is_overlapping(player, instance):
 	for item in instance.towers:
 		if abs(item.x - player.x) < 20 and abs(item.y - player.y) < 20:
-			build_mode = True
+			instance.build_mode = True
 			sounds.fail.play()
 			return True
 	sounds.success.play()
 	return False
 
 
-def buy(price):
-	global build_mode
+def buy(player, instance, price):
 	if player.gold >= price:
 		player.setGold(player.gold - price)
-		build_mode = False
+		instance.build_mode = False
 		return True
 	sounds.fail.play()
 	return False
-
-
-def debug_mode_script():
-	if debug_mode:
-		player.setGold(100000)
 	
 
-def update_player_location(player_x, player_y):
-	player_x += player.dx
-	player_y += player.dy
+def update_player_location(player):
+	player_x = player.x + player.dx
+	player_y = player.y + player.dy
 
 	if player_x >= constants.DISPLAY_WIDTH - constants.TILE_SIZE:
 		player_x = constants.DISPLAY_WIDTH - constants.TILE_SIZE
 	if player_x <= 0:
 		player_x = 0
 	if player_y >= constants.DISPLAY_HEIGHT - constants.TILE_SIZE:
-		player_y = constants.DISPLAY_HEIGHT- constants.TILE_SIZE
+		player_y = constants.DISPLAY_HEIGHT - constants.TILE_SIZE
 	if player_y <= 0:
 		player_y = 0
 
@@ -257,15 +245,15 @@ def start_loop():
 
 
 # Main game loop
-def main_game_loop():
-	global player_dead, debug_mode, build_mode, current_tower, light_map
-	global player, prevDir, fx, current_wave
-	while not player_dead:
-		if not build_mode:
+def main_game_loop(player, instance):
+	global light_map, fx, current_wave
+	while player.health > 0:
+		if not instance.build_mode:
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
-					player_dead = True
-				handle_movement(event)
+					player.health = 0
+					return True
+				handle_movement(event, player, instance)
 
 			instance.frame += 1
 			if instance.frame >= 24:
@@ -284,7 +272,7 @@ def main_game_loop():
 				if current_wave.getGap() <= 0:
 					current_wave = init_new_wave(current_wave)
 
-			update_player_location(player.x, player.y)
+			update_player_location(player)
 
 			# Deal damage to bad guys
 			for proj in instance.projectiles:
@@ -306,7 +294,7 @@ def main_game_loop():
 			# Move bad guys and deal damage to good guy
 			for badguy in instance.enemies:
 				badguy.update(player.x, player.y)
-				if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20 and not debug_mode:
+				if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20 and not instance.debug_mode:
 					player.health -= badguy.damage
 
 			fx = []
@@ -339,54 +327,53 @@ def main_game_loop():
 				else:
 					item.cooldown -= 1
 
-			draw_board(game_display, player, instance, light_map, fx, debug_mode)
-			draw_hud(game_display, basicfont, player, instance, debug_mode)
+			draw_board(game_display, player, instance, light_map, fx)
+			draw_hud(game_display, basicfont, player, instance)
 			draw_wave_number(game_display, basicfont, current_wave.getLevel())
 			if len(instance.enemies) == 0:
 				draw_incoming_wave(game_display, basicfont, current_wave.getLevel())
 
-			debug_mode_script()
+			if instance.debug_mode:
+				player.gold = 31337
+
 			pygame.display.update()
 			clock.tick(24)
 
 			if player.getHealth() <= 0:
 				player.setHealth(0)
-				player_dead = True
 			elif player.health <= player.max_health:
 				player.health += constants.PLAYER_HEALTH_INCREMENT
 		else:
 			player.dx = 0
 			player.dy = 0
-			draw_board(game_display, player, instance, light_map, fx, debug_mode)
-			draw_hud(game_display, basicfont, player, instance, debug_mode)
-			if current_tower is not None:
-				draw_build_hud(game_display, basicfont, current_tower)
+			draw_board(game_display, player, instance, light_map, fx)
+			draw_hud(game_display, basicfont, player, instance)
+			if instance.current_tower is not None:
+				draw_build_hud(game_display, basicfont, instance.current_tower)
 			game_display.blit(images.build_overlay, (0, 0))
 			pygame.display.flip()
-			handle_build_keys()
+			handle_build_keys(player, instance)
+	return False
 
-
-def quit_loop():
-	quitting = True
+def quit_loop(quitting):
+	game_display.blit(images.death_overlay, (0, 0))
+	pygame.display.flip()
 	while quitting:
-		draw_board(game_display, player, instance, light_map, fx, debug_mode)
-		draw_hud(game_display, basicfont, player, instance, debug_mode)
-		game_display.blit(images.death_overlay, (0, 0))
-		pygame.display.flip()
-
 		for event in pygame.event.get():
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_q:
 					quitting = False
 				if event.key == pygame.K_a:
 					play_game()
+			if event.type == pygame.QUIT:
+				quitting = False
 
 
 def play_game():
-	initialise()
+	player, instance = initialise()
 	start_loop()
-	main_game_loop()
-	quit_loop()
+	didClose = main_game_loop(player, instance)
+	quit_loop(not didClose)
 
 
 play_game()
