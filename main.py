@@ -62,13 +62,11 @@ pygame.mixer.music.play(-1)
 
 
 def initialise():
-	global player_dead, start_screen, debug_mode, build_mode, quitting_bool, current_tower, light_map
-	global player, prevDir, max_health, frame, seconds, current_wave, instance
+	global player_dead, debug_mode, build_mode, current_tower, light_map
+	global player, frame, seconds, current_wave, instance
 	player_dead = False
-	start_screen = True
 	debug_mode = False
 	build_mode = False
-	quitting_bool = False
 	current_tower = None
 
 	curr_enemies = []
@@ -77,9 +75,7 @@ def initialise():
 		curr_enemies.append(enemy.Zombie(location[0], location[1]))
 
 	current_wave = wave.Wave(1, curr_enemies)
-
 	instance = game.Game()
-
 	light_map = generate_light_surface(instance.lights)
 
 	# Making player
@@ -95,24 +91,19 @@ def initialise():
 		[]
 	)
 
-	prevDir = constants.RIGHT
-
-	frame = 0
-	seconds = 0
-
 
 def handle_movement(event):
-	global prevDir, debug_mode, seconds, build_mode, current_tower, instance
+	global debug_mode, build_mode, current_tower, instance
 
 	if event.type == pygame.KEYDOWN:
 		if event.key == pygame.K_a:
 			player.dx = -player.speed
 			player.flipScript("a")
-			prevDir = constants.LEFT
+			instance.prevDir = constants.LEFT
 		elif event.key == pygame.K_d:
 			player.dx = player.speed
 			player.flipScript("d")
-			prevDir = constants.RIGHT
+			instance.prevDir = constants.RIGHT
 		if event.key == pygame.K_w:
 			player.dy = -player.speed
 			player.flipScript("w")
@@ -144,7 +135,7 @@ def handle_movement(event):
 			player.dy = 0
 
 		if event.key == pygame.K_SPACE:
-			player.attack_flip(prevDir)
+			player.attack_flip(instance.prevDir)
 
 
 def handle_build_keys():
@@ -256,7 +247,7 @@ def init_new_wave(currWave):
 
 # Start screen loop
 def start_loop():
-	global start_screen
+	start_screen = True
 	while start_screen:
 		for event in pygame.event.get():
 			if event.type == pygame.KEYDOWN:
@@ -267,8 +258,8 @@ def start_loop():
 
 # Main game loop
 def main_game_loop():
-	global player_dead, start_screen, debug_mode, build_mode, quitting_bool, current_tower, light_map
-	global player, prevDir, frame, seconds, fx, current_wave
+	global player_dead, debug_mode, build_mode, current_tower, light_map
+	global player, prevDir, fx, current_wave
 	while not player_dead:
 		if not build_mode:
 			for event in pygame.event.get():
@@ -276,15 +267,15 @@ def main_game_loop():
 					player_dead = True
 				handle_movement(event)
 
-			frame += 1
-			if frame >= 24:
-				seconds += 1
-				frame = 0
+			instance.frame += 1
+			if instance.frame >= 24:
+				instance.seconds += 1
+				instance.frame = 0
 			
 			# Spawning - including wave mechanics
 
 			if len(current_wave.getEnemies()) > 0:	
-				if frame == 0 or frame == 12:
+				if instance.frame % 12 == 0:
 					instance.enemies.append(current_wave.getEnemies().pop())
 
 			elif len(current_wave.getEnemies()) <= 0 and len(instance.enemies) == 0:
@@ -349,8 +340,8 @@ def main_game_loop():
 					item.cooldown -= 1
 
 			draw_board(game_display, player, instance, light_map, fx, debug_mode)
-			draw_hud(game_display, basicfont, player, instance.score, frame, seconds, debug_mode)
-			draw_wave_number(game_display, basicfont, constants.DISPLAY_HEIGHT, constants.DISPLAY_WIDTH, current_wave.getLevel())
+			draw_hud(game_display, basicfont, player, instance, debug_mode)
+			draw_wave_number(game_display, basicfont, current_wave.getLevel())
 			if len(instance.enemies) == 0:
 				draw_incoming_wave(game_display, basicfont, current_wave.getLevel())
 
@@ -361,14 +352,13 @@ def main_game_loop():
 			if player.getHealth() <= 0:
 				player.setHealth(0)
 				player_dead = True
-				quitting_bool = True
 			elif player.health <= player.max_health:
 				player.health += constants.PLAYER_HEALTH_INCREMENT
 		else:
 			player.dx = 0
 			player.dy = 0
 			draw_board(game_display, player, instance, light_map, fx, debug_mode)
-			draw_hud(game_display, basicfont, player, instance.score, frame, seconds, debug_mode)
+			draw_hud(game_display, basicfont, player, instance, debug_mode)
 			if current_tower is not None:
 				draw_build_hud(game_display, basicfont, current_tower)
 			game_display.blit(images.build_overlay, (0, 0))
@@ -377,17 +367,17 @@ def main_game_loop():
 
 
 def quit_loop():
-	global quitting_bool
-	while quitting_bool:
+	quitting = True
+	while quitting:
 		draw_board(game_display, player, instance, light_map, fx, debug_mode)
-		draw_hud(game_display, basicfont, player, instance.score, frame, seconds, debug_mode)
+		draw_hud(game_display, basicfont, player, instance, debug_mode)
 		game_display.blit(images.death_overlay, (0, 0))
 		pygame.display.flip()
 
 		for event in pygame.event.get():
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_q:
-					quitting_bool = False
+					quitting = False
 				if event.key == pygame.K_a:
 					play_game()
 
@@ -397,6 +387,7 @@ def play_game():
 	start_loop()
 	main_game_loop()
 	quit_loop()
+
 
 play_game()
 pygame.quit()
