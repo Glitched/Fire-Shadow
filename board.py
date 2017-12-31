@@ -4,13 +4,12 @@ import animation
 import pygame
 
 
-def draw_board(width, height, screen, player, enemies, projectiles, towers, lights, light_map, fx, debug_mode):
-
+def draw_board(screen, player, instance, light_map, fx, debug_mode):
 	screen.blit(images.board_background, (0, 0))
-	place_towers(towers, screen)
+	place_towers(instance.towers, screen)
 	draw_fx(fx, screen)
-	draw_projectiles(projectiles, screen)
-	place_objects(width, height, screen, enemies, lights)
+	draw_projectiles(instance.projectiles, screen)
+	place_objects(screen, instance.enemies, instance.lights)
 
 	# Draw lighting
 	if not debug_mode:
@@ -35,7 +34,7 @@ def place_towers(towers, screen):
 		screen.blit(tower.sprite, (tower.x, tower.y))
 
 
-def place_objects(width, height, screen, enemies, lights):
+def place_objects(screen, enemies, lights):
 	"""
 	This function places objects on the board
 	"""
@@ -45,7 +44,7 @@ def place_objects(width, height, screen, enemies, lights):
 
 	# campfire image
 	current_image = animation.campfire_flicker(constants.FLICKER_I)
-	screen.blit(current_image, (width / 2, height / 2))
+	screen.blit(current_image, (constants.DISPLAY_WIDTH / 2, constants.DISPLAY_HEIGHT / 2))
 	constants.FLICKER_I += 1
 	if constants.FLICKER_I == 20:
 		constants.FLICKER_I = 1
@@ -54,8 +53,8 @@ def place_objects(width, height, screen, enemies, lights):
 		screen.blit(current_image, light)
 
 
-def generate_light_surface(width, height, lights):
-	fx = pygame.surface.Surface((width, height))
+def generate_light_surface(lights):
+	fx = pygame.surface.Surface((constants.DISPLAY_WIDTH, constants.DISPLAY_HEIGHT))
 	fx.fill(pygame.color.Color('White'))
 	for light in lights:
 		fx.blit(images.light, (light[0] - 352 + 16, light[1] - 352 + 16))
