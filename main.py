@@ -245,11 +245,14 @@ def main_game_loop(player, instance):
 				player.health += constants.PLAYER_HEALTH_INCREMENT
 		else:
 			player.dx = player.dy = 0
-			draw_board(game_display, player, instance, None)
+
+			draw_board(game_display, player, instance, [])
 			draw_hud(game_display, basicfont, player, instance)
+			game_display.blit(images.build_overlay, (0, 0))
+
 			if instance.current_tower is not None:
 				draw_build_hud(game_display, basicfont, instance.current_tower)
-			game_display.blit(images.build_overlay, (0, 0))
+
 			pygame.display.flip()
 			handle_build_keys(player, instance)
 	return False
@@ -271,32 +274,39 @@ def process_towers(instance):
 	fx = []
 	for item in instance.towers:
 		if item.cooldown <= 0:
-			item.cooldown = item.max_cooldown
-			if isinstance(item, tower.Trap):
-				item.sprite = images.trap
-				for badguy in instance.enemies:
-					if abs(badguy.x - item.x) < 20 and abs(badguy.y - item.y) < 20:
-						instance.enemies.remove(badguy)
-						item.sprite = images.trap_disabled
-						break
-			elif isinstance(item, tower.Freeze):
-				for badguy in instance.enemies:
-					if abs(badguy.x - item.x) < 64 and abs(badguy.y - item.y) < 64 and badguy.speed != 0:
-						fx.append((item.x - 48, item.y - 48))
-						badguy.speed = 0
-						break
-			elif isinstance(item, tower.Turret):
-				for badguy in instance.enemies:
-					if abs(badguy.x - item.x) < 92 and abs(badguy.y - item.y) < 92:
-						proj = projectile.TurretShot(
-							item.x, item.y,
-							math.atan((badguy.y - item.y) / (0.0001 + badguy.x - item.x)),
-							(item.y < badguy.y), (item.x < badguy.x)
-						)
-						instance.projectiles.append(proj)
-						break
+			fx = process_tower(fx, instance, item)
 		else:
 			item.cooldown -= 1
+	return fx
+
+
+def process_tower(fx, instance, item):
+	if isinstance(item, tower.Trap):
+		item.sprite = images.trap
+		for badguy in instance.enemies:
+			if abs(badguy.x - item.x) < 20 and abs(badguy.y - item.y) < 20:
+				instance.enemies.remove(badguy)
+				item.sprite = images.trap_disabled
+				item.cooldown = item.max_cooldown
+				break
+	elif isinstance(item, tower.Freeze):
+		item.cooldown = item.max_cooldown
+		for badguy in instance.enemies:
+			if abs(badguy.x - item.x) < 64 and abs(badguy.y - item.y) < 64 and badguy.speed != 0:
+				fx.append((item.x - 48, item.y - 48))
+				badguy.speed = 0
+				break
+	elif isinstance(item, tower.Turret):
+		item.cooldown = item.max_cooldown
+		for badguy in instance.enemies:
+			if abs(badguy.x - item.x) < 92 and abs(badguy.y - item.y) < 92:
+				proj = projectile.TurretShot(
+					item.x, item.y,
+					math.atan((badguy.y - item.y) / (0.0001 + badguy.x - item.x)),
+					(item.y < badguy.y), (item.x < badguy.x)
+				)
+				instance.projectiles.append(proj)
+				break
 	return fx
 
 

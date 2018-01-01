@@ -25,9 +25,8 @@ def draw_projectiles(projectiles, screen):
 
 
 def draw_fx(fx, screen):
-	if fx is not None:
-		for effect in fx:
-			screen.blit(images.frost, effect, special_flags=pygame.BLEND_ADD)
+	for effect in fx:
+		screen.blit(images.frost, effect, special_flags=pygame.BLEND_ADD)
 
 
 def place_towers(towers, screen):
