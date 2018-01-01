@@ -10,8 +10,6 @@ class Game(object):
         self.lights = [(constants.DISPLAY_WIDTH / 2, constants.DISPLAY_HEIGHT / 2)]
         self.light_map = None
 
-        self.prevDir = constants.RIGHT
-
         self.frame = 0
         self.seconds = 0
 

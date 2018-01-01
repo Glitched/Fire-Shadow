@@ -27,7 +27,6 @@ TODO LIST:
 - Better path detection
 - Cache Tower surface, like lighting
 - Upgrade the wave system, i.e. tweaking numbers and spawning algorithms
-- MASSIVE cleanup: no more magic numbers, absurdly long functions, and functions without somewhat detailed specs so we know what we're doing
 - NOTES FROM GAMEPLAY: Need to cap the "Upgrade speed". If you keep going like twice or thrice the game becomes unplayable. Also need to figure out HP + DMG scaling.
 
 IDEAS LIST:
@@ -71,8 +70,6 @@ def initialise():
 	instance.light_map = generate_light_surface(instance.lights)
 	instance.current_wave = wave.Wave(1, curr_enemies)
 
-
-	# Making player
 	player = baseCharacter.Wizard(
 		constants.DISPLAY_WIDTH / 2,
 		constants.DISPLAY_HEIGHT / 2,
@@ -90,20 +87,7 @@ def initialise():
 
 def handle_movement(event, player, instance):
 	if event.type == pygame.KEYDOWN:
-		if event.key == pygame.K_a:
-			player.dx = -player.speed
-			player.flipScript("a")
-			instance.prevDir = constants.LEFT
-		elif event.key == pygame.K_d:
-			player.dx = player.speed
-			player.flipScript("d")
-			instance.prevDir = constants.RIGHT
-		if event.key == pygame.K_w:
-			player.dy = -player.speed
-			player.flipScript("w")
-		elif event.key == pygame.K_s:
-			player.dy = player.speed
-			player.flipScript("s")
+		player.set_momentum(event.key)
 
 		if event.key == pygame.K_SPACE:
 			instance.projectiles.append(player.attack())
@@ -129,7 +113,7 @@ def handle_movement(event, player, instance):
 			player.dy = 0
 
 		if event.key == pygame.K_SPACE:
-			player.attack_flip(instance.prevDir)
+			player.attack_flip()
 
 
 def handle_build_keys(player, instance):

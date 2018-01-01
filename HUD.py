@@ -3,14 +3,14 @@ import constants
 
 def draw_hud(screen, font, player, instance):
 	# Money
-	text = font.render("Gold: " + str(player.gold), True, (255, 255, 255))
+	text = font.render("Gold: " + str(player.gold), True, (255, 226, 96))
 	textrect = text.get_rect()
 	textrect.top = 10
 	textrect.left = 10
 	screen.blit(text, textrect)
 
 	# Health
-	healthdisplay = font.render("Health: " + str(round(player.health)), True, (255, 255, 255))
+	healthdisplay = font.render("Health: " + str(round(player.health)), True, (255, 64, 64))
 	heathrect = text.get_rect()
 	heathrect.top = constants.DISPLAY_HEIGHT - 30
 	heathrect.left = 10

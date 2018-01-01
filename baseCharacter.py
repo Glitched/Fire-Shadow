@@ -12,11 +12,13 @@ class Character(object):
         self.y = y
         self.health = max_health
         self.max_health = max_health
+        self.prevDir = constants.RIGHT
         self.facing = constants.RIGHT
         self.atk = atk
         self.speed = speed
         self.dx = 0
         self.dy = 0
+
 
     def getX(self):
         return self.x
@@ -42,39 +44,50 @@ class Character(object):
     def setFacing(self, arg):
         self.facing = arg
 
-    def flipScript(self, key):
-
-        if key == 'a':
-            if self.getFacing() != constants.LEFT:
-                self.setFacing(constants.LEFT)
-                self.sprite = images.wizard_left
-        if key == 'd':
-            if self.getFacing() != constants.RIGHT:
-                self.setFacing(constants.RIGHT)
-                self.sprite = images.wizard
-        if key == 'w':        
-            if self.getFacing() != constants.UP:
-                self.setFacing(constants.UP)
-        if key == 's':
-            if self.getFacing() != constants.DOWN:
-                self.setFacing(constants.DOWN)
-
-    def attack_flip(self, prevDir):
-
+    def attack_flip(self):
         if self.getFacing() == constants.LEFT:
             self.sprite = images.wizard_left
         elif self.getFacing() == constants.RIGHT:
             self.sprite = images.wizard
         elif self.getFacing() == constants.UP:
-            if prevDir == constants.LEFT:
+            if self.prevDir == constants.LEFT:
                 self.sprite = images.wizard_left
-            elif prevDir == constants.RIGHT:
+            elif self.prevDir == constants.RIGHT:
                 self.sprite = images.wizard
         elif self.getFacing() == constants.DOWN:
-            if prevDir == constants.LEFT:
+            if self.prevDir == constants.LEFT:
                 self.sprite = images.wizard_left
-            elif prevDir == constants.RIGHT:
+            elif self.prevDir == constants.RIGHT:
                 self.sprite = images.wizard
+
+    def set_momentum(self, key):
+        if key == pygame.K_a:
+            self.dx = -self.speed
+            self.prevDir = constants.LEFT
+        elif key == pygame.K_d:
+            self.dx = self.speed
+            self.prevDir = constants.RIGHT
+        if key == pygame.K_w:
+            self.dy = -self.speed
+        elif key == pygame.K_s:
+            self.dy = self.speed
+        self.flip_facing_direction(key)
+
+    def flip_facing_direction(self, key):
+        if key == pygame.K_a:
+            if self.getFacing() != constants.LEFT:
+                self.setFacing(constants.LEFT)
+                self.sprite = images.wizard_left
+        if key == pygame.K_d:
+            if self.getFacing() != constants.RIGHT:
+                self.setFacing(constants.RIGHT)
+                self.sprite = images.wizard
+        if key == pygame.K_w:
+            if self.getFacing() != constants.UP:
+                self.setFacing(constants.UP)
+        if key == pygame.K_s:
+            if self.getFacing() != constants.DOWN:
+                self.setFacing(constants.DOWN)
 
     def move(self):
         self.x = max(0, min(self.x + self.dx, constants.DISPLAY_WIDTH - constants.TILE_SIZE))
