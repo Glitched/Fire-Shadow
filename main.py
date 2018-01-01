@@ -54,7 +54,7 @@ game_display = pygame.display.set_mode((constants.DISPLAY_WIDTH, constants.DISPL
 pygame.display.set_caption('Fire & Shadow')
 clock = pygame.time.Clock()
 
-basicfont = pygame.font.SysFont(None, 22)
+basicfont = pygame.font.Font('ArsleGothic.ttf', 16)
 
 pygame.mixer.music.load('music.ogg')
 pygame.mixer.music.play(-1)
