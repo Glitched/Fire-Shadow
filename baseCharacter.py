@@ -16,6 +16,7 @@ class Character(object):
         self.facing = constants.RIGHT
         self.atk = atk
         self.speed = speed
+        self.speed_upgrades = 0
         self.dx = 0
         self.dy = 0
 

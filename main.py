@@ -145,7 +145,8 @@ def handle_build_keys(player, instance):
 
 			if event.key == pygame.K_c:
 				if buy(player, instance, 400):
-					player.speed = 1.5 * player.speed
+					player.speed_upgrades += 1
+					player.speed = (1 + (0.4/player.speed_upgrades)) * player.speed
 
 			if event.key == pygame.K_x:
 				buy(player, instance, 600)
