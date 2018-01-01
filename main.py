@@ -235,18 +235,7 @@ def main_game_loop(player, instance):
 				handle_movement(event, player, instance)
 
 			instance.tick()
-			
-			# Spawning - including wave mechanics
-			if len(instance.current_wave.getEnemies()) > 0:
-				if instance.frame % 12 == 0:
-					instance.enemies.append(instance.current_wave.getEnemies().pop())
-
-			elif len(instance.current_wave.getEnemies()) <= 0 and len(instance.enemies) == 0:
-				instance.current_wave.setGap(instance.current_wave.getGap()-(1/60))
-
-				if instance.current_wave.getGap() <= 0:
-					instance.current_wave = init_new_wave(instance.current_wave)
-
+			spawn_enemies(instance)
 			player.move()
 			process_projectiles(instance, player)
 			process_enemies(instance, player)
@@ -279,6 +268,18 @@ def main_game_loop(player, instance):
 			pygame.display.flip()
 			handle_build_keys(player, instance)
 	return False
+
+
+def spawn_enemies(instance):
+	if len(instance.current_wave.getEnemies()) > 0:
+		if instance.frame % 12 == 0:
+			instance.enemies.append(instance.current_wave.getEnemies().pop())
+
+	elif len(instance.current_wave.getEnemies()) <= 0 and len(instance.enemies) == 0:
+		instance.current_wave.setGap(instance.current_wave.getGap() - (1 / 60))
+
+		if instance.current_wave.getGap() <= 0:
+			instance.current_wave = init_new_wave(instance.current_wave)
 
 
 def process_towers(instance):
