@@ -23,3 +23,9 @@ class Game(object):
         self.current_tower = None
 
         self.current_wave = None
+
+    def tick(self):
+        self.frame += 1
+        if self.frame >= 24:
+            self.seconds += 1
+            self.frame = 0

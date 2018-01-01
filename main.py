@@ -215,13 +215,13 @@ def init_new_wave(currWave):
 
 # Start screen loop
 def start_loop():
+	game_display.blit(images.title_screen, (0, 0))
+	pygame.display.flip()
 	start_screen = True
 	while start_screen:
 		for event in pygame.event.get():
 			if event.type == pygame.KEYDOWN:
 				start_screen = False
-		game_display.blit(images.title_screen, (0, 0))
-		pygame.display.update()
 
 
 # Main game loop
@@ -234,13 +234,9 @@ def main_game_loop(player, instance):
 					return True
 				handle_movement(event, player, instance)
 
-			instance.frame += 1
-			if instance.frame >= 24:
-				instance.seconds += 1
-				instance.frame = 0
+			instance.tick()
 			
 			# Spawning - including wave mechanics
-
 			if len(instance.current_wave.getEnemies()) > 0:
 				if instance.frame % 12 == 0:
 					instance.enemies.append(instance.current_wave.getEnemies().pop())
@@ -252,63 +248,14 @@ def main_game_loop(player, instance):
 					instance.current_wave = init_new_wave(instance.current_wave)
 
 			player.move()
-
-			# Deal damage to bad guys
-			for proj in instance.projectiles:
-				if proj.getX() >= constants.DISPLAY_WIDTH or proj.getX() <= 0 \
-					or proj.getY() >= constants.DISPLAY_HEIGHT or proj.getY() <= 0:
-					instance.projectiles.remove(proj)
-				else:
-					proj.update()
-					for badguy in instance.enemies:
-						if abs((proj.getX()) - badguy.x ) < 20 and abs((proj.getY()) - badguy.y) < 20:
-							badguy.health -= proj.damage
-							instance.projectiles.remove(proj)
-							if badguy.health <= 0:
-								instance.enemies.remove(badguy)
-								instance.score += 1
-								player.setGold(player.getGold() + badguy.getValue())
-							break
-
-			# Move bad guys and deal damage to good guy
-			for badguy in instance.enemies:
-				badguy.update(player.x, player.y)
-				if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20 and not instance.debug_mode:
-					player.health -= badguy.damage
-
-			fx = []
-			for item in instance.towers:
-				if item.cooldown <= 0:
-					item.cooldown = item.max_cooldown
-					if isinstance(item, tower.Trap):
-						item.sprite = images.trap
-						for badguy in instance.enemies:
-							if abs(badguy.x - item.x) < 20 and abs(badguy.y - item.y) < 20:
-								instance.enemies.remove(badguy)
-								item.sprite = images.trap_disabled
-								break
-					elif isinstance(item, tower.Freeze):
-						for badguy in instance.enemies:
-							if abs(badguy.x - item.x) < 64 and abs(badguy.y - item.y) < 64 and badguy.speed != 0:
-								fx.append((item.x - 48, item.y - 48))
-								badguy.speed = 0
-								break
-					elif isinstance(item, tower.Turret):
-						for badguy in instance.enemies:
-							if abs(badguy.x - item.x) < 92 and abs(badguy.y - item.y) < 92:
-								proj = projectile.TurretShot(
-									item.x, item.y,
-									math.atan((badguy.y - item.y)/(0.0001 + badguy.x - item.x)),
-									(item.y < badguy.y), (item.x < badguy.x)
-								)
-								instance.projectiles.append(proj)
-								break
-				else:
-					item.cooldown -= 1
+			process_projectiles(instance, player)
+			process_enemies(instance, player)
+			fx = process_towers(instance)
 
 			draw_board(game_display, player, instance, fx)
 			draw_hud(game_display, basicfont, player, instance)
 			draw_wave_number(game_display, basicfont, instance.current_wave.getLevel())
+
 			if len(instance.enemies) == 0:
 				draw_incoming_wave(game_display, basicfont, instance.current_wave.getLevel())
 
@@ -323,8 +270,7 @@ def main_game_loop(player, instance):
 			elif player.health <= player.max_health:
 				player.health += constants.PLAYER_HEALTH_INCREMENT
 		else:
-			player.dx = 0
-			player.dy = 0
+			player.dx = player.dy = 0
 			draw_board(game_display, player, instance, None)
 			draw_hud(game_display, basicfont, player, instance)
 			if instance.current_tower is not None:
@@ -333,6 +279,64 @@ def main_game_loop(player, instance):
 			pygame.display.flip()
 			handle_build_keys(player, instance)
 	return False
+
+
+def process_towers(instance):
+	fx = []
+	for item in instance.towers:
+		if item.cooldown <= 0:
+			item.cooldown = item.max_cooldown
+			if isinstance(item, tower.Trap):
+				item.sprite = images.trap
+				for badguy in instance.enemies:
+					if abs(badguy.x - item.x) < 20 and abs(badguy.y - item.y) < 20:
+						instance.enemies.remove(badguy)
+						item.sprite = images.trap_disabled
+						break
+			elif isinstance(item, tower.Freeze):
+				for badguy in instance.enemies:
+					if abs(badguy.x - item.x) < 64 and abs(badguy.y - item.y) < 64 and badguy.speed != 0:
+						fx.append((item.x - 48, item.y - 48))
+						badguy.speed = 0
+						break
+			elif isinstance(item, tower.Turret):
+				for badguy in instance.enemies:
+					if abs(badguy.x - item.x) < 92 and abs(badguy.y - item.y) < 92:
+						proj = projectile.TurretShot(
+							item.x, item.y,
+							math.atan((badguy.y - item.y) / (0.0001 + badguy.x - item.x)),
+							(item.y < badguy.y), (item.x < badguy.x)
+						)
+						instance.projectiles.append(proj)
+						break
+		else:
+			item.cooldown -= 1
+	return fx
+
+
+def process_enemies(instance, player):
+	for badguy in instance.enemies:
+		badguy.update(player.x, player.y)
+		if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20 and not instance.debug_mode:
+			player.health -= badguy.damage
+
+
+def process_projectiles(instance, player):
+	for proj in instance.projectiles:
+		if proj.getX() >= constants.DISPLAY_WIDTH or proj.getX() <= 0 \
+				or proj.getY() >= constants.DISPLAY_HEIGHT or proj.getY() <= 0:
+			instance.projectiles.remove(proj)
+		else:
+			proj.update()
+			for badguy in instance.enemies:
+				if abs((proj.getX()) - badguy.x) < 20 and abs((proj.getY()) - badguy.y) < 20:
+					badguy.health -= proj.damage
+					instance.projectiles.remove(proj)
+					if badguy.health <= 0:
+						instance.enemies.remove(badguy)
+						instance.score += 1
+						player.setGold(player.getGold() + badguy.getValue())
+					break
 
 
 def quit_loop(quitting):
