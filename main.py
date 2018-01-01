@@ -187,23 +187,6 @@ def buy(player, instance, price):
 		return True
 	sounds.fail.play()
 	return False
-	
-
-def update_player_location(player):
-	player_x = player.x + player.dx
-	player_y = player.y + player.dy
-
-	if player_x >= constants.DISPLAY_WIDTH - constants.TILE_SIZE:
-		player_x = constants.DISPLAY_WIDTH - constants.TILE_SIZE
-	if player_x <= 0:
-		player_x = 0
-	if player_y >= constants.DISPLAY_HEIGHT - constants.TILE_SIZE:
-		player_y = constants.DISPLAY_HEIGHT - constants.TILE_SIZE
-	if player_y <= 0:
-		player_y = 0
-
-	player.setX(player_x)
-	player.setY(player_y)
 
 
 def init_new_wave(currWave):
@@ -268,7 +251,7 @@ def main_game_loop(player, instance):
 				if instance.current_wave.getGap() <= 0:
 					instance.current_wave = init_new_wave(instance.current_wave)
 
-			update_player_location(player)
+			player.move()
 
 			# Deal damage to bad guys
 			for proj in instance.projectiles:
@@ -350,6 +333,7 @@ def main_game_loop(player, instance):
 			pygame.display.flip()
 			handle_build_keys(player, instance)
 	return False
+
 
 def quit_loop(quitting):
 	game_display.blit(images.death_overlay, (0, 0))

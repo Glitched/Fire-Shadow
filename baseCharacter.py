@@ -76,10 +76,12 @@ class Character(object):
             elif prevDir == constants.RIGHT:
                 self.sprite = images.wizard
 
+    def move(self):
+        self.x = min(0, max(self.x + self.dx, constants.DISPLAY_HEIGHT - constants.TILE_SIZE))
+        self.y = min(0, max(self.y + self.dy, constants.DISPLAY_HEIGHT - constants.TILE_SIZE))
 
-    
 
-    # TODO: Implement getters and setters for the rest of these functions
+        # TODO: Implement getters and setters for the rest of these functions
 
 
 class PlayerCharacter(Character):
