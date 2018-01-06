@@ -1,4 +1,4 @@
-# Fire-Shadow
+# Fire and Shadow
 
 This is an indie tower defence/role-playing survival hybrid game developed by Arjun Bhalla (ArjunBhalla98) and Ryan Slama (Glitched).
 
