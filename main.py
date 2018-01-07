@@ -20,13 +20,13 @@ TODO LIST:
 - Towers that shoot/ different ideas/ power up towers (beacons)
 - GUI rework
 - Actual pathfinding algorithms
-- Upgrade systemsq
+- Upgrade systems
 - Per Tower Upgrades
 - Sprites for character upgrades
 - Better path detection
 - Cache Tower surface, like lighting
 - Upgrade the wave system, i.e. tweaking numbers and spawning algorithms
-- NOTES FROM GAMEPLAY: Need to cap the "Upgrade speed". If you keep going like twice or thrice the game becomes unplayable. Also need to figure out HP + DMG scaling.
+- NOTES FROM GAMEPLAY: Need to figure out HP + DMG scaling.
 
 IDEAS LIST:
 
@@ -124,7 +124,7 @@ def handle_build_keys(player, instance):
 
 			if event.key == pygame.K_t:
 				if buy(player, instance, 40) and not tower_is_overlapping(player, instance):
-					instance.towers.append(tower.Trap(player.x, player.y))
+					instance.towers.append(tower.Trap1(player.x, player.y))
 
 			if event.key == pygame.K_g:
 				if buy(player, instance, 100) and not tower_is_overlapping(player, instance):
@@ -146,10 +146,15 @@ def handle_build_keys(player, instance):
 			if event.key == pygame.K_c:
 				if buy(player, instance, 400):
 					player.speed_upgrades += 1
-					player.speed = (1 + (0.4/player.speed_upgrades)) * player.speed
+					player.speed = (1 + (0.2/player.speed_upgrades)) * player.speed
 
 			if event.key == pygame.K_x:
 				buy(player, instance, 600)
+
+			if event.key == pygame.K_v:
+				if isinstance(instance.current_tower, tower.Trap1) and buy(player, instance, 60):
+					instance.towers.remove(instance.current_tower)
+					instance.towers.append(tower.Trap2(instance.current_tower.x, instance.current_tower.y))
 
 			if event.key == pygame.K_e:
 				instance.build_mode = False

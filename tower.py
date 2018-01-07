@@ -15,24 +15,25 @@ class Tower(object):
 
 
 class Trap(Tower):
+	def __init__(self, x, y, cooldown):
+		super().__init__(images.trap, x, y, 40, cooldown)
 
+
+class Trap1(Trap):
 	def __init__(self, x, y):
-		super().__init__(images.trap, x, y, 40, 48)
+		super().__init__(x, y, 48)
 
 
-class Trap2(Tower):
-
+class Trap2(Trap):
 	def __init__(self, x, y):
-		super().__init__(images.trap, x, y, 40, 24)
+		super().__init__(x, y, 24)
 
 
 class Freeze(Tower):
-
 	def __init__(self, x, y):
 		super().__init__(images.freeze, x, y, 200, 24)
 
 
 class Turret(Tower):
-
 	def __init__(self, x, y):
 		super().__init__(images.turret, x, y, 250, 4)
