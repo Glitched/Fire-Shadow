@@ -9,12 +9,8 @@ def draw_hud(screen, font, player, instance):
 	textrect.left = 10
 	screen.blit(text, textrect)
 
-	# Health
-	if player.getHealth() < 0:
-		player.setHealth(0)
-
-	#Process hearts
-	heart_image = health_logic(player.getHealth()) #IS AN IMAGE
+	# Process hearts
+	heart_image = health_logic(player.getHealth())  # IS AN IMAGE
 
 	heathrect = heart_image.get_rect()
 	heathrect.top = constants.DISPLAY_HEIGHT - 30
@@ -60,6 +56,7 @@ def draw_build_hud(screen, font, tower):
 	score_rect.left = 600
 	screen.blit(score_display, score_rect)
 
+
 def health_logic(h):
 	"""
 	This function will decide which heart image to process depending on the health (h) that is passed in. 
@@ -68,43 +65,43 @@ def health_logic(h):
 	"""
 	if h >= 95:
 		return i.one_hundred
-	elif h < 95 and h >= 90:
+	elif h >= 90:
 		return i.ninety_five
-	elif h < 90 and h >= 85:
+	elif h >= 85:
 		return i.ninety
-	elif h < 85 and h >= 80:
+	elif h >= 80:
 		return i.eighty_five
-	elif h < 80 and h >= 75:
+	elif h >= 75:
 		return i.eighty
-	elif h < 75 and h >= 70:
+	elif h >= 70:
 		return i.seventy_five
-	elif h < 70 and h >= 65:
+	elif h >= 65:
 		return i.seventy 
-	elif h < 65 and h >= 60:
+	elif h >= 60:
 		return i.sixty_five
-	elif h < 60 and h >= 55:
+	elif h >= 55:
 		return i.sixty 
-	elif h < 55 and h >= 50:
+	elif h >= 50:
 		return i.fifty_five
-	elif h < 50 and h >= 45:
+	elif h >= 45:
 		return i.fifty 
-	elif h < 45 and h >= 40:
+	elif h >= 40:
 		return i.fourty_five
-	elif h < 40 and h >= 35:
+	elif h >= 35:
 		return i.fourty 
-	elif h < 35 and h >= 30:
+	elif h >= 30:
 		return i.thirty_five
-	elif h < 30 and h >= 25:
+	elif h >= 25:
 		return i.thirty 
-	elif h < 25 and h >= 20:
+	elif h >= 20:
 		return i.twenty_five
-	elif h < 20 and h >= 15:
+	elif h >= 15:
 		return i.twenty
-	elif h < 15 and h >= 10:
+	elif h >= 10:
 		return i.fifteen
-	elif h < 10 and h >= 5:
+	elif h >= 5:
 		return i.ten
-	elif h < 5 and h > 0:
+	elif h > 0:
 		return i.five 
 	else:
 		return i.zero 

@@ -34,7 +34,7 @@ class Character(object):
         self.y = arg
 
     def setHealth(self, arg):
-        self.health = arg
+        self.health = min(max(0, arg), self.max_health)
 
     def getHealth(self):
         return self.health

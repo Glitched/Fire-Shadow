@@ -119,7 +119,7 @@ def handle_movement(event, player, instance):
 def handle_build_keys(player, instance):
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
-			player.health = 0
+			player.setHealth(0)
 		if event.type == pygame.KEYDOWN:
 
 			if event.key == pygame.K_t:
@@ -215,9 +215,11 @@ def main_game_loop(player, instance):
 		if not instance.build_mode:
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
-					player.health = 0
+					player.setHealth(0)
 					return True
 				handle_movement(event, player, instance)
+
+			player.setHealth(player.getHealth() + constants.PLAYER_HEALTH_INCREMENT)
 
 			instance.tick()
 			spawn_enemies(instance)
@@ -238,11 +240,6 @@ def main_game_loop(player, instance):
 
 			pygame.display.update()
 			clock.tick(24)
-
-			if player.getHealth() <= 0:
-				player.setHealth(0)
-			elif player.health <= player.max_health:
-				player.health += constants.PLAYER_HEALTH_INCREMENT
 		else:
 			player.dx = player.dy = 0
 
