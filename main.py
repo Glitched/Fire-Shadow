@@ -21,7 +21,6 @@ TODO LIST:
 - GUI rework
 - Actual pathfinding algorithms
 - Upgrade systems
-- Hearts instead of health number (Ten hearts, divisible in half)
 - Per Tower Upgrades
 - Sprites for character upgrades
 - Better path detection
@@ -32,7 +31,7 @@ TODO LIST:
 IDEAS LIST:
 
 - The game is currently too easy: perhaps more enemy variety/ boss waves (i.e. every 5 or so)
-- On the same vein, probably need to weaken towers a decent bit, playing this game I had no difficulty getting to wave 14 just sitting in towers, 
+- Along the same vein, probably need to weaken towers a decent bit, playing this game I had no difficulty getting to wave 14 just sitting in towers, 
 and it got boring quickly.
 
 DONE LIST: 
@@ -44,6 +43,7 @@ DONE LIST:
 - Find a new font (Check google fonts) DONE 01-Dec-17
 - Play Again option DONE 23-Dec-17
 - Wave System DONE 25-Dec-17
+- Hearts instead of health number (Ten hearts, divisible in half) 07-Jan-18
 
 """
 
