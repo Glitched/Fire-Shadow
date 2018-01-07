@@ -314,7 +314,7 @@ def process_enemies(instance, player):
 	for badguy in instance.enemies:
 		badguy.update(player.x, player.y)
 		if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20 and not instance.debug_mode:
-			player.health -= badguy.damage
+			player.setHealth(player.getHealth() - badguy.damage)
 
 
 def process_projectiles(instance, player):
