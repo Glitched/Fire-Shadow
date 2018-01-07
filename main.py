@@ -20,7 +20,7 @@ TODO LIST:
 - Towers that shoot/ different ideas/ power up towers (beacons)
 - GUI rework
 - Actual pathfinding algorithms
-- Upgrade systems
+- Upgrade systemsq
 - Per Tower Upgrades
 - Sprites for character upgrades
 - Better path detection
