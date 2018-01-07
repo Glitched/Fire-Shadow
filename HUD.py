@@ -10,6 +10,8 @@ def draw_hud(screen, font, player, instance):
 	screen.blit(text, textrect)
 
 	# Health
+	if player.health < 0:
+		player.health = 0
 	healthdisplay = font.render("Health: " + str(round(player.health)), True, (255, 64, 64))
 	heathrect = text.get_rect()
 	heathrect.top = constants.DISPLAY_HEIGHT - 30
