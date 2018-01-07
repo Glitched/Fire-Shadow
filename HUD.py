@@ -16,7 +16,6 @@ def draw_hud(screen, font, player, instance):
 	#Process hearts
 	heart_image = health_logic(player.getHealth()) #IS AN IMAGE
 
-	healthdisplay = font.render("Health: " + str(round(player.health)), True, (255, 64, 64))
 	heathrect = heart_image.get_rect()
 	heathrect.top = constants.DISPLAY_HEIGHT - 30
 	heathrect.left = 10
@@ -67,7 +66,7 @@ def health_logic(h):
 	Returns an IMAGE.
 
 	"""
-	if h >= 95 and h <= 100:
+	if h >= 95:
 		return i.one_hundred
 	elif h < 95 and h >= 90:
 		return i.ninety_five
