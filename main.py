@@ -122,37 +122,35 @@ def handle_build_keys(player, instance):
 			player.setHealth(0)
 		if event.type == pygame.KEYDOWN:
 
-			if event.key == pygame.K_t:
-				if buy(player, instance, 40) and not tower_is_overlapping(player, instance):
-					instance.towers.append(tower.Trap1(player.x, player.y))
-
-			if event.key == pygame.K_g:
-				if buy(player, instance, 100) and not tower_is_overlapping(player, instance):
-					instance.lights.append((player.x, player.y))
-					instance.light_map = add_light(instance.light_map, (player.x, player.y))
-
-			if event.key == pygame.K_f:
-				if buy(player, instance, 250) and not tower_is_overlapping(player, instance):
-					instance.towers.append(tower.Freeze(player.x, player.y))
-
-			if event.key == pygame.K_r:
-				if buy(player, instance, 250) and not tower_is_overlapping(player, instance):
-					instance.towers.append(tower.Turret(player.x, player.y))
+			if not tower_is_overlapping(player, instance):
+				if event.key == pygame.K_t:
+					if buy(player, instance, constants.PRICE["trap"]):
+						instance.towers.append(tower.Trap1(player.x, player.y))
+				if event.key == pygame.K_g:
+					if buy(player, instance, constants.PRICE["campfire"]):
+						instance.lights.append((player.x, player.y))
+						instance.light_map = add_light(instance.light_map, (player.x, player.y))
+				if event.key == pygame.K_f:
+					if buy(player, instance, constants.PRICE["freeze"]):
+						instance.towers.append(tower.Freeze(player.x, player.y))
+				if event.key == pygame.K_r:
+					if buy(player, instance, constants.PRICE["turret"]):
+						instance.towers.append(tower.Turret(player.x, player.y))
 
 			if event.key == pygame.K_d:
-				if buy(player, instance, 400):
+				if buy(player, instance, constants.PRICE["attack"]):
 					player.atk = 1.5 * player.atk
 
 			if event.key == pygame.K_c:
-				if buy(player, instance, 400):
+				if buy(player, instance, constants.PRICE["speed"]):
 					player.speed_upgrades += 1
 					player.speed = (1 + (0.2/player.speed_upgrades)) * player.speed
 
 			if event.key == pygame.K_x:
-				buy(player, instance, 600)
+				buy(player, instance, constants.PRICE["intelligence"])
 
 			if event.key == pygame.K_v:
-				if isinstance(instance.current_tower, tower.Trap1) and buy(player, instance, 60):
+				if isinstance(instance.current_tower, tower.Trap1) and buy(player, instance, constants.PRICE["trap2"]):
 					instance.towers.remove(instance.current_tower)
 					instance.towers.append(tower.Trap2(instance.current_tower.x, instance.current_tower.y))
 

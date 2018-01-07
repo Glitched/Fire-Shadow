@@ -39,3 +39,15 @@ SPEED_ZOMBIE_VALUE = 10
 # Game Dimensions
 DISPLAY_WIDTH = 1280
 DISPLAY_HEIGHT = 704
+
+# Tower Prices
+PRICE = {
+	"trap": 40,
+	"trap2": 60,
+	"campfire": 100,
+	"freeze": 250,
+	"turret": 250,
+	"attack": 400,
+	"speed": 400,
+	"intelligence": 600,
+}
