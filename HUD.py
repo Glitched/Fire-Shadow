@@ -1,6 +1,7 @@
 import constants
 import images as i
 
+
 def draw_hud(screen, font, player, instance):
 	# Money
 	text = font.render("Gold: " + str(player.gold), True, (255, 226, 96))

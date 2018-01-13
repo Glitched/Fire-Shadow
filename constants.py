@@ -1,3 +1,4 @@
+import pygame
 
 FLICKER_I = 1
 TILE_SIZE = 32
@@ -55,3 +56,9 @@ PRICE = {
 	"speed": 400,
 	"intelligence": 600,
 }
+
+# Build HUD
+FONT_HEADER = pygame.font.Font('ArsleGothic.ttf', 32)
+FONT_ITEM = pygame.font.Font('ArsleGothic.ttf', 18)
+ITEM_COLOR = (255, 188, 144)
+BUILD_PAD_LEFT = 120

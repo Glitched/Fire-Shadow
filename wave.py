@@ -6,7 +6,7 @@ import random
 
 def init_new_wave(curr_wave):
 	num_fast_per_wave = 2
-	num_big_per_wave = 2  # TEMPORARY NUMBERS, WE CAN COME UP WITH A GOOD AMOUNT AND SCALING LATER, AS WELL AS AN ASSIGNMENT
+	num_big_per_wave = 2  # TEMPORARY NUMBERS, WE CAN COME UP WITH A GOOD AMOUNT AND SCALING LATER
 
 	enem = []
 	level = curr_wave.getLevel() + 1

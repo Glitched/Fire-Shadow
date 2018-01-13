@@ -9,6 +9,7 @@ import images
 import sounds
 import projectile
 import wave
+import build_hud
 from board import *
 from HUD import *
 
@@ -22,8 +23,8 @@ clock = pygame.time.Clock()
 
 basicfont = pygame.font.Font('ArsleGothic.ttf', 16)
 
-pygame.mixer.music.load('music.ogg')
-pygame.mixer.music.play(-1)
+# pygame.mixer.music.load('music.ogg')
+# pygame.mixer.music.play(-1)
 
 
 def initialise():
@@ -86,7 +87,12 @@ def handle_build_keys(player, instance):
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			player.setHealth(0)
+			return True
 		if event.type == pygame.KEYDOWN:
+
+			if event.key == pygame.K_e:
+				instance.build_mode = False
+				return
 
 			if not tower_is_overlapping(player, instance):
 				if event.key == pygame.K_t:
@@ -126,9 +132,7 @@ def handle_build_keys(player, instance):
 					instance.replace_current_tower(tower.Freeze2)
 				if isinstance(instance.current_tower, tower.Freeze2) and buy(player, instance, constants.PRICE["freeze3"]):
 					instance.replace_current_tower(tower.Freeze3)
-
-			if event.key == pygame.K_e:
-				instance.build_mode = False
+	return False
 
 
 def tower_is_overlapping(player, instance):
@@ -137,7 +141,6 @@ def tower_is_overlapping(player, instance):
 			instance.build_mode = True
 			sounds.fail.play()
 			return True
-	sounds.success.play()
 	return False
 
 
@@ -145,6 +148,7 @@ def buy(player, instance, price):
 	if player.gold >= price:
 		player.setGold(player.gold - price)
 		instance.build_mode = False
+		sounds.success.play()
 		return True
 	sounds.fail.play()
 	return False
@@ -197,13 +201,15 @@ def main_game_loop(player, instance):
 
 			draw_board(game_display, player, instance, [])
 			draw_hud(game_display, basicfont, player, instance)
-			game_display.blit(images.build_overlay, (0, 0))
+			build_hud.draw(game_display, instance, player)
+			# game_display.blit(images.build_overlay, (0, 0))
 
 			if instance.current_tower is not None:
 				draw_build_hud(game_display, basicfont, instance.current_tower)
 
 			pygame.display.flip()
-			handle_build_keys(player, instance)
+			if handle_build_keys(player, instance):
+				return True
 	return False
 
 
@@ -224,8 +230,8 @@ def quit_loop():
 def play_game():
 	player, instance = initialise()
 	start_loop()
-	didClose = main_game_loop(player, instance)
-	if not didClose:
+	did_close = main_game_loop(player, instance)
+	if not did_close:
 		quit_loop()
 
 

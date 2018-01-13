@@ -3,7 +3,6 @@ TODO LIST:
 
 - Branding work: Logo and other shit
 - Power up towers (beacons)
-- GUI rework
 - Actual pathfinding algorithms
 - Per Tower Upgrades
 - Sprites for character upgrades
@@ -22,6 +21,7 @@ and it got boring quickly.
 DONE LIST:
 ==========
 
+- GUI rework 12-Jan-18
 - Tower upgrade system 12-Jan-18
 - Better Anti-Tower Stacking 17-Dec-17
 - Character Upgrades 17-Dec-17
