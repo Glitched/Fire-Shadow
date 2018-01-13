@@ -6,22 +6,23 @@ import random
 
 def init_new_wave(curr_wave):
 	num_fast_per_wave = 2
-	num_big_per_wave = 2  # THESE ARE TEMPORARY NUMBERS, WE CAN COME UP WITH A GOOD AMOUNT AND SCALING LATER, AS WELL AS AN ASSIGNMENT
+	num_big_per_wave = 2  # TEMPORARY NUMBERS, WE CAN COME UP WITH A GOOD AMOUNT AND SCALING LATER, AS WELL AS AN ASSIGNMENT
 
 	enem = []
 	level = curr_wave.getLevel() + 1
 
 	for n in range(int(curr_wave.getNumEnemies() * constants.WAVE_SCALING)):
-		location = random_spawn_location(constants.DISPLAY_WIDTH, constants.DISPLAY_HEIGHT)
+		x, y = random_spawn_location(constants.DISPLAY_WIDTH, constants.DISPLAY_HEIGHT)
 		if n == 0 or n == 1:
-			enem.append(enemy.SpeedZombie(location[0], location[1]))
+			enem.append(enemy.SpeedZombie(x, y))
 		elif n == 2 or n == 3:
-			enem.append(enemy.StrongZombie(location[0], location[1]))
+			enem.append(enemy.StrongZombie(x, y))
 		else:
-			enem.append(enemy.Zombie(location[0], location[1]))
+			enem.append(enemy.Zombie(x, y))
 
 	for badguy in enem:
 		badguy.setDamage(badguy.getDamage() * level / 3)
+		badguy.health += level / 3
 
 	return Wave(level, enem)
 
@@ -62,7 +63,7 @@ class Wave(object):
 		self.total_length = len(enemies)
 		self.enemies = enemies
 		self.gap = constants.WAVE_GAP
-		self.damage_multiplier = level/3 #temporary, can fiddle with this one
+		self.damage_multiplier = level/3 # temporary, can fiddle with this one
 
 	def getLevel(self):
 		return self.level

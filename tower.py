@@ -106,9 +106,9 @@ class Turret1(Turret):
 
 class Turret2(Turret):
 	def __init__(self, x, y):
-		super().__init__(x, y, 92, 4)
+		super().__init__(x, y, 98, 4)
 
 
 class Turret3(Turret):
 	def __init__(self, x, y):
-		super().__init__(x, y, 128, 3)
+		super().__init__(x, y, 108, 3)
