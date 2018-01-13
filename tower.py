@@ -1,5 +1,46 @@
 import images
+import projectile
+import math
 
+
+def process_towers(instance):
+	fx = []
+	for item in instance.towers:
+		if item.cooldown <= 0:
+			fx = process_tower(fx, instance, item)
+		else:
+			item.cooldown -= 1
+	return fx
+
+
+def process_tower(fx, instance, item):
+	if isinstance(item, Trap):
+		item.sprite = images.trap
+		for badguy in instance.enemies:
+			if abs(badguy.x - item.x) < 20 and abs(badguy.y - item.y) < 20:
+				instance.enemies.remove(badguy)
+				item.sprite = images.trap_disabled
+				item.cooldown = item.max_cooldown
+				break
+	elif isinstance(item, Freeze):
+		item.cooldown = item.max_cooldown
+		for badguy in instance.enemies:
+			if abs(badguy.x - item.x) < 64 and abs(badguy.y - item.y) < 64 and badguy.speed != 0:
+				fx.append((item.x - 48, item.y - 48))
+				badguy.speed = 0
+				break
+	elif isinstance(item, Turret):
+		item.cooldown = item.max_cooldown
+		for badguy in instance.enemies:
+			if abs(badguy.x - item.x) < 92 and abs(badguy.y - item.y) < 92:
+				proj = projectile.TurretShot(
+					item.x, item.y,
+					math.atan((badguy.y - item.y) / (0.0001 + badguy.x - item.x)),
+					(item.y < badguy.y), (item.x < badguy.x)
+				)
+				instance.projectiles.append(proj)
+				break
+	return fx
 
 class Tower(object):
 

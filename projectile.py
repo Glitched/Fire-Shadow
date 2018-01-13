@@ -4,6 +4,24 @@ import math
 import constants
 
 
+def process_projectiles(instance, player):
+	for proj in instance.projectiles:
+		if proj.getX() >= constants.DISPLAY_WIDTH or proj.getX() <= 0 \
+				or proj.getY() >= constants.DISPLAY_HEIGHT or proj.getY() <= 0:
+			instance.projectiles.remove(proj)
+		else:
+			proj.update()
+			for badguy in instance.enemies:
+				if abs((proj.getX()) - badguy.x) < 20 and abs((proj.getY()) - badguy.y) < 20:
+					badguy.health -= proj.damage
+					instance.projectiles.remove(proj)
+					if badguy.health <= 0:
+						instance.enemies.remove(badguy)
+						instance.score += 1
+						player.setGold(player.getGold() + badguy.getValue())
+					break
+
+
 class Projectile(object):
 
 	def __init__(self, sprite, speed, damage, x, y, dirn):

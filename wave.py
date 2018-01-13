@@ -1,5 +1,47 @@
 import pygame
 import constants
+import enemy
+import random
+
+
+def init_new_wave(curr_wave):
+	num_fast_per_wave = 2
+	num_big_per_wave = 2  # THESE ARE TEMPORARY NUMBERS, WE CAN COME UP WITH A GOOD AMOUNT AND SCALING LATER, AS WELL AS AN ASSIGNMENT
+
+	enem = []
+	level = curr_wave.getLevel() + 1
+
+	for n in range(int(curr_wave.getNumEnemies() * constants.WAVE_SCALING)):
+		location = random_spawn_location(constants.DISPLAY_WIDTH, constants.DISPLAY_HEIGHT)
+		if n == 0 or n == 1:
+			enem.append(enemy.SpeedZombie(location[0], location[1]))
+		elif n == 2 or n == 3:
+			enem.append(enemy.StrongZombie(location[0], location[1]))
+		else:
+			enem.append(enemy.Zombie(location[0], location[1]))
+
+	for badguy in enem:
+		badguy.setDamage(badguy.getDamage() * level / 3)
+
+	return Wave(level, enem)
+
+
+def random_spawn_location(width, height):
+	y = 0
+	x = 0
+	edge = random.randint(0, 4)
+	if edge == 1:
+		x = random.randint(0, width)
+	elif edge == 2:
+		x = random.randint(0, width)
+		y = height
+	elif edge == 3:
+		y = random.randint(0, height)
+	else:
+		y = random.randint(0, height)
+		x = width
+	return x, y
+
 
 class Wave(object):
 	"""

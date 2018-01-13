@@ -6,8 +6,7 @@ death_overlay = pygame.image.load('images/deathOverlay.png')
 build_overlay = pygame.image.load('images/build.png')
 board_background = pygame.image.load('images/board.png')
 
-#Main screen - hearts
-
+# Main screen - hearts
 one_hundred = pygame.image.load('images/100.png')
 ninety_five = pygame.image.load('images/95.png')
 ninety = pygame.image.load('images/90.png')

@@ -1,23 +1,26 @@
 import images
-import random
 import constants
+import wave
 
 
-def random_spawn_location(width, height):
-	y = 0
-	x = 0
-	edge = random.randint(0, 4)
-	if edge == 1:
-		x = random.randint(0, width)
-	elif edge == 2:
-		x = random.randint(0, width)
-		y = height
-	elif edge == 3:
-		y = random.randint(0, height)
-	else:
-		y = random.randint(0, height)
-		x = width
-	return x, y
+def spawn_enemies(instance):
+	if len(instance.current_wave.getEnemies()) > 0:
+		if instance.frame % 12 == 0:
+			instance.enemies.append(instance.current_wave.getEnemies().pop())
+
+	elif len(instance.current_wave.getEnemies()) <= 0 and len(instance.enemies) == 0:
+		instance.current_wave.setGap(instance.current_wave.getGap() - (1 / 60))
+
+		if instance.current_wave.getGap() <= 0:
+			instance.current_wave = wave.init_new_wave(instance.current_wave)
+
+
+def process_enemies(instance, player):
+	for badguy in instance.enemies:
+		badguy.update(player.x, player.y)
+		if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20 and not instance.debug_mode:
+			player.setHealth(player.getHealth() - badguy.damage)
+
 
 
 class Enemy(object):

@@ -8,7 +8,6 @@ import tower
 import images
 import sounds
 import projectile
-import math
 import wave
 from board import *
 from HUD import *
@@ -63,7 +62,7 @@ pygame.mixer.music.play(-1)
 def initialise():
 	curr_enemies = []
 	for n in range(constants.BASE_WAVE_AMOUNT):
-		location = enemy.random_spawn_location(constants.DISPLAY_WIDTH, constants.DISPLAY_HEIGHT)
+		location = wave.random_spawn_location(constants.DISPLAY_WIDTH, constants.DISPLAY_HEIGHT)
 		curr_enemies.append(enemy.Zombie(location[0], location[1]))
 
 	instance = game.Game()
@@ -177,30 +176,6 @@ def buy(player, instance, price):
 	return False
 
 
-def init_new_wave(currWave):
-	num_fast_per_wave = 2
-	num_big_per_wave = 2  # THESE ARE TEMPORARY NUMBERS, WE CAN COME UP WITH A GOOD AMOUNT AND SCALING LATER, AS WELL AS AN ASSIGNMENT
-
-	enem = []
-	level = currWave.getLevel() + 1
-
-	for n in range(int(currWave.getNumEnemies()*constants.WAVE_SCALING)):
-		location = enemy.random_spawn_location(constants.DISPLAY_WIDTH, constants.DISPLAY_HEIGHT)
-		if n == 0 or n == 1:
-			enem.append(enemy.SpeedZombie(location[0], location[1]))
-		elif n == 2 or n == 3:
-			enem.append(enemy.StrongZombie(location[0], location[1]))
-		else:
-			enem.append(enemy.Zombie(location[0], location[1]))
-
-	for badguy in enem:
-		badguy.setDamage(badguy.getDamage()*level/3)
-
-	newWave = wave.Wave(level, enem)
-	
-	return newWave
-
-
 # Start screen loop
 def start_loop():
 	game_display.blit(images.title_screen, (0, 0))
@@ -225,11 +200,11 @@ def main_game_loop(player, instance):
 			player.setHealth(player.getHealth() + constants.PLAYER_HEALTH_INCREMENT)
 
 			instance.tick()
-			spawn_enemies(instance)
+			enemy.spawn_enemies(instance)
 			player.move()
-			process_projectiles(instance, player)
-			process_enemies(instance, player)
-			fx = process_towers(instance)
+			projectile.process_projectiles(instance, player)
+			enemy.process_enemies(instance, player)
+			fx = tower.process_towers(instance)
 
 			draw_board(game_display, player, instance, fx)
 			draw_hud(game_display, basicfont, player, instance)
@@ -258,102 +233,26 @@ def main_game_loop(player, instance):
 	return False
 
 
-def spawn_enemies(instance):
-	if len(instance.current_wave.getEnemies()) > 0:
-		if instance.frame % 12 == 0:
-			instance.enemies.append(instance.current_wave.getEnemies().pop())
-
-	elif len(instance.current_wave.getEnemies()) <= 0 and len(instance.enemies) == 0:
-		instance.current_wave.setGap(instance.current_wave.getGap() - (1 / 60))
-
-		if instance.current_wave.getGap() <= 0:
-			instance.current_wave = init_new_wave(instance.current_wave)
-
-
-def process_towers(instance):
-	fx = []
-	for item in instance.towers:
-		if item.cooldown <= 0:
-			fx = process_tower(fx, instance, item)
-		else:
-			item.cooldown -= 1
-	return fx
-
-
-def process_tower(fx, instance, item):
-	if isinstance(item, tower.Trap):
-		item.sprite = images.trap
-		for badguy in instance.enemies:
-			if abs(badguy.x - item.x) < 20 and abs(badguy.y - item.y) < 20:
-				instance.enemies.remove(badguy)
-				item.sprite = images.trap_disabled
-				item.cooldown = item.max_cooldown
-				break
-	elif isinstance(item, tower.Freeze):
-		item.cooldown = item.max_cooldown
-		for badguy in instance.enemies:
-			if abs(badguy.x - item.x) < 64 and abs(badguy.y - item.y) < 64 and badguy.speed != 0:
-				fx.append((item.x - 48, item.y - 48))
-				badguy.speed = 0
-				break
-	elif isinstance(item, tower.Turret):
-		item.cooldown = item.max_cooldown
-		for badguy in instance.enemies:
-			if abs(badguy.x - item.x) < 92 and abs(badguy.y - item.y) < 92:
-				proj = projectile.TurretShot(
-					item.x, item.y,
-					math.atan((badguy.y - item.y) / (0.0001 + badguy.x - item.x)),
-					(item.y < badguy.y), (item.x < badguy.x)
-				)
-				instance.projectiles.append(proj)
-				break
-	return fx
-
-
-def process_enemies(instance, player):
-	for badguy in instance.enemies:
-		badguy.update(player.x, player.y)
-		if abs(badguy.x - player.x) < 20 and abs(badguy.y - player.y) < 20 and not instance.debug_mode:
-			player.setHealth(player.getHealth() - badguy.damage)
-
-
-def process_projectiles(instance, player):
-	for proj in instance.projectiles:
-		if proj.getX() >= constants.DISPLAY_WIDTH or proj.getX() <= 0 \
-				or proj.getY() >= constants.DISPLAY_HEIGHT or proj.getY() <= 0:
-			instance.projectiles.remove(proj)
-		else:
-			proj.update()
-			for badguy in instance.enemies:
-				if abs((proj.getX()) - badguy.x) < 20 and abs((proj.getY()) - badguy.y) < 20:
-					badguy.health -= proj.damage
-					instance.projectiles.remove(proj)
-					if badguy.health <= 0:
-						instance.enemies.remove(badguy)
-						instance.score += 1
-						player.setGold(player.getGold() + badguy.getValue())
-					break
-
-
-def quit_loop(quitting):
+def quit_loop():
 	game_display.blit(images.death_overlay, (0, 0))
 	pygame.display.flip()
-	while quitting:
+	while True:
 		for event in pygame.event.get():
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_q:
-					quitting = False
+					break
 				if event.key == pygame.K_a:
 					play_game()
 			if event.type == pygame.QUIT:
-				quitting = False
+				break
 
 
 def play_game():
 	player, instance = initialise()
 	start_loop()
 	didClose = main_game_loop(player, instance)
-	quit_loop(not didClose)
+	if not didClose:
+		quit_loop()
 
 
 play_game()
