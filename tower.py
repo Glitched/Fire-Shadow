@@ -25,13 +25,13 @@ def process_tower(fx, instance, item):
 	elif isinstance(item, Freeze):
 		item.cooldown = item.max_cooldown
 		for badguy in instance.enemies:
-			if abs(badguy.x - item.x) < 64 and abs(badguy.y - item.y) < 64 and badguy.speed != 0:
+			if abs(badguy.x - item.x) < item.range and abs(badguy.y - item.y) < item.range and badguy.speed != 0:
 				fx.append((item.x - 48, item.y - 48))
 				badguy.speed = 1
 	elif isinstance(item, Turret):
 		item.cooldown = item.max_cooldown
 		for badguy in instance.enemies:
-			if abs(badguy.x - item.x) < 92 and abs(badguy.y - item.y) < 92:
+			if abs(badguy.x - item.x) < item.range and abs(badguy.y - item.y) < item.range:
 				proj = projectile.TurretShot(
 					item.x, item.y,
 					math.atan((badguy.y - item.y) / (0.0001 + badguy.x - item.x)),
@@ -41,9 +41,10 @@ def process_tower(fx, instance, item):
 				break
 	return fx
 
+
 class Tower(object):
 
-	def __init__(self, sprite, x, y, price, max_cooldown):
+	def __init__(self, sprite, x, y, max_cooldown):
 
 		self.sprite = sprite
 		self.cooldown = 0
@@ -51,12 +52,11 @@ class Tower(object):
 
 		self.x = x
 		self.y = y
-		self.price = price
 
 
 class Trap(Tower):
 	def __init__(self, x, y, cooldown):
-		super().__init__(images.trap, x, y, 40, cooldown)
+		super().__init__(images.trap, x, y, cooldown)
 
 
 class Trap1(Trap):
@@ -70,10 +70,42 @@ class Trap2(Trap):
 
 
 class Freeze(Tower):
+	def __init__(self, x, y, range):
+		super().__init__(images.freeze, x, y, 24)
+		self.range = range
+
+
+class Freeze1(Freeze):
 	def __init__(self, x, y):
-		super().__init__(images.freeze, x, y, 200, 24)
+		super().__init__(x, y, 64)
+
+
+class Freeze2(Freeze):
+	def __init__(self, x, y):
+		super().__init__(x, y, 80)
+
+
+class Freeze3(Freeze):
+	def __init__(self, x, y):
+		super().__init__(x, y, 92)
 
 
 class Turret(Tower):
+	def __init__(self, x, y, range, cooldown):
+		self.range = range
+		super().__init__(images.turret, x, y, cooldown)
+
+
+class Turret1(Turret):
 	def __init__(self, x, y):
-		super().__init__(images.turret, x, y, 250, 4)
+		super().__init__(x, y, 92, 6)
+
+
+class Turret2(Turret):
+	def __init__(self, x, y):
+		super().__init__(x, y, 92, 4)
+
+
+class Turret3(Turret):
+	def __init__(self, x, y):
+		super().__init__(x, y, 128, 3)

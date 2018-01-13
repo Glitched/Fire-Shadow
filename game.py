@@ -27,3 +27,7 @@ class Game(object):
         if self.frame >= 24:
             self.seconds += 1
             self.frame = 0
+
+    def replace_current_tower(self, tower):
+        self.towers.remove(self.current_tower)
+        self.towers.append(tower(self.current_tower.x, self.current_tower.y))

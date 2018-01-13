@@ -5,7 +5,6 @@ TODO LIST:
 - Power up towers (beacons)
 - GUI rework
 - Actual pathfinding algorithms
-- Upgrade systems
 - Per Tower Upgrades
 - Sprites for character upgrades
 - Better path detection
@@ -23,6 +22,7 @@ and it got boring quickly.
 DONE LIST:
 ==========
 
+- Tower upgrade system 12-Jan-18
 - Better Anti-Tower Stacking 17-Dec-17
 - Character Upgrades 17-Dec-17
 - Implement a debug mode DONE 01-Dec-17

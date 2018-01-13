@@ -98,10 +98,10 @@ def handle_build_keys(player, instance):
 						instance.light_map = add_light(instance.light_map, (player.x, player.y))
 				if event.key == pygame.K_f:
 					if buy(player, instance, constants.PRICE["freeze"]):
-						instance.towers.append(tower.Freeze(player.x, player.y))
+						instance.towers.append(tower.Freeze1(player.x, player.y))
 				if event.key == pygame.K_r:
 					if buy(player, instance, constants.PRICE["turret"]):
-						instance.towers.append(tower.Turret(player.x, player.y))
+						instance.towers.append(tower.Turret1(player.x, player.y))
 
 			if event.key == pygame.K_d:
 				if buy(player, instance, constants.PRICE["attack"]):
@@ -117,8 +117,15 @@ def handle_build_keys(player, instance):
 
 			if event.key == pygame.K_v:
 				if isinstance(instance.current_tower, tower.Trap1) and buy(player, instance, constants.PRICE["trap2"]):
-					instance.towers.remove(instance.current_tower)
-					instance.towers.append(tower.Trap2(instance.current_tower.x, instance.current_tower.y))
+					instance.replace_current_tower(tower.Trap2)
+				if isinstance(instance.current_tower, tower.Turret1) and buy(player, instance, constants.PRICE["turret2"]):
+					instance.replace_current_tower(tower.Turret2)
+				if isinstance(instance.current_tower, tower.Turret2) and buy(player, instance, constants.PRICE["turret3"]):
+					instance.replace_current_tower(tower.Turret3)
+				if isinstance(instance.current_tower, tower.Freeze1) and buy(player, instance, constants.PRICE["freeze2"]):
+					instance.replace_current_tower(tower.Freeze2)
+				if isinstance(instance.current_tower, tower.Freeze2) and buy(player, instance, constants.PRICE["freeze3"]):
+					instance.replace_current_tower(tower.Freeze3)
 
 			if event.key == pygame.K_e:
 				instance.build_mode = False
