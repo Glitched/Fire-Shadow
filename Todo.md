@@ -1,13 +1,11 @@
 TODO LIST:
 ==========
 
-- Branding work: Logo and other shit
+- Branding work: Logo etc
 - Power up towers (beacons)
 - Actual pathfinding algorithms
-- Per Tower Upgrades
 - Sprites for character upgrades
 - Better path detection
-- Cache Tower surface, like lighting
 - Upgrade the wave system, i.e. tweaking numbers and spawning algorithms
 - NOTES FROM GAMEPLAY: Need to figure out HP + DMG scaling.
 
@@ -21,6 +19,7 @@ and it got boring quickly.
 DONE LIST:
 ==========
 
+- Per Tower Upgrades 12-Jan-18
 - GUI rework 12-Jan-18
 - Tower upgrade system 12-Jan-18
 - Better Anti-Tower Stacking 17-Dec-17
