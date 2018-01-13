@@ -202,10 +202,6 @@ def main_game_loop(player, instance):
 			draw_board(game_display, player, instance, [])
 			draw_hud(game_display, basicfont, player, instance)
 			build_hud.draw(game_display, instance, player)
-			# game_display.blit(images.build_overlay, (0, 0))
-
-			if instance.current_tower is not None:
-				draw_build_hud(game_display, basicfont, instance.current_tower)
 
 			pygame.display.flip()
 			if handle_build_keys(player, instance):

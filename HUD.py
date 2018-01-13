@@ -50,14 +50,6 @@ def draw_incoming_wave(screen, font, wave_num):
 	screen.blit(text, rect)
 
 
-def draw_build_hud(screen, font, tower):
-	score_display = font.render("Current Tower: ", True, (255, 255, 255))
-	score_rect = score_display.get_rect()
-	score_rect.top = 510
-	score_rect.left = 600
-	screen.blit(score_display, score_rect)
-
-
 def health_logic(h):
 	"""
 	This function will decide which heart image to process depending on the health (h) that is passed in. 

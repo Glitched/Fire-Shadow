@@ -44,11 +44,13 @@ class Trap(Tower):
 class Trap1(Trap):
 	def __init__(self, x, y):
 		super().__init__(x, y, 48)
+		self.name = "Trap (Level 1)"
 
 
 class Trap2(Trap):
 	def __init__(self, x, y):
 		super().__init__(x, y, 24)
+		self.name = "Trap (Level 2)"
 
 
 class Freeze(Tower):
@@ -69,16 +71,19 @@ class Freeze(Tower):
 class Freeze1(Freeze):
 	def __init__(self, x, y):
 		super().__init__(x, y, 64)
+		self.name = "Freeze (Level 1)"
 
 
 class Freeze2(Freeze):
 	def __init__(self, x, y):
 		super().__init__(x, y, 80)
+		self.name = "Freeze (Level 2)"
 
 
 class Freeze3(Freeze):
 	def __init__(self, x, y):
 		super().__init__(x, y, 92)
+		self.name = "Freeze (Level 3)"
 
 
 class Turret(Tower):
@@ -102,13 +107,16 @@ class Turret(Tower):
 class Turret1(Turret):
 	def __init__(self, x, y):
 		super().__init__(x, y, 92, 6)
+		self.name = "Turret (Level 1)"
 
 
 class Turret2(Turret):
 	def __init__(self, x, y):
 		super().__init__(x, y, 98, 4)
+		self.name = "Turret (Level 2)"
 
 
 class Turret3(Turret):
 	def __init__(self, x, y):
 		super().__init__(x, y, 108, 3)
+		self.name = "Turret (Level 3)"
