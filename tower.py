@@ -27,8 +27,7 @@ def process_tower(fx, instance, item):
 		for badguy in instance.enemies:
 			if abs(badguy.x - item.x) < 64 and abs(badguy.y - item.y) < 64 and badguy.speed != 0:
 				fx.append((item.x - 48, item.y - 48))
-				badguy.speed = 0
-				break
+				badguy.speed = 1
 	elif isinstance(item, Turret):
 		item.cooldown = item.max_cooldown
 		for badguy in instance.enemies:

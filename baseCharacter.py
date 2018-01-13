@@ -141,8 +141,3 @@ class Wizard(PlayerCharacter):
             self.sprite = images.wizard_attack_down
 
         return new_proj
-
-
-
-
-

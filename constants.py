@@ -45,7 +45,7 @@ PRICE = {
 	"trap": 40,
 	"trap2": 60,
 	"campfire": 100,
-	"freeze": 250,
+	"freeze": 150,
 	"turret": 250,
 	"attack": 400,
 	"speed": 400,
